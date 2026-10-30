@@ -46,7 +46,7 @@
     {
       "name": "zcode-counters",
       "source": "./plugins/zcode-counters",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "description": "Полоса счётчиков в одну строку с индикатором Working: ходы, шаги, ток/с, суммарные токены и попадание в кэш, с анимированными иконками.",
       "displayName": "Счётчики токенов",
       "displayName_i18n": {

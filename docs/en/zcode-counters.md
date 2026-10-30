@@ -1,9 +1,10 @@
 # zcode-counters · Token counters
 
 📊 **Counters on the same line as the "Working" spinner:** to the right of it you get
-`⏱ 27 · ⧉ 718 · ⚡ 66 · ▤ 149.5M · ◔ 49.7%`, using the spinner's own font and size,
-with animated icons. Numbers are **summed across all sessions** and refreshed **live**:
-350 ms while a turn is running, 1 s when idle. No session folder/name is shown.
+`⏱ 26 · ⧉ 558 · ⚡ 87 · ▤ 105.9M · ◔ 49.8%`, using the spinner's own font and size,
+with animated icons. Turns, steps and the total cover **the current session/task only**
+and refresh **live**: 350 ms while a turn is running, 1 s when idle. No session
+folder/name is shown.
 
 ![How it works](../assets/zcode-counters-en.svg)
 
@@ -37,16 +38,17 @@ flowchart LR
 
 | Metric | Source | Formula |
 |---|---|---|
-| Turns | `turn_usage`, all sessions | `count(*)` |
-| Steps | `tool_usage`, all sessions | `count(*)` |
-| Tokens/s | freshest turn | `output_tokens / (completed_at − first_token_at)` |
-| Σ tokens | all turns | `sum(computed_total_tokens)` |
-| Cache % | all turns | `sum(cache_read) / (sum(cache_read) + sum(input))` |
+| Turns | `turn_usage` of the current session | `count(*)` |
+| Steps | `tool_usage` of the current session | `count(*)` |
+| Tokens/s | last turn of the session | `output_tokens / (completed_at − first_token_at)` |
+| Σ tokens | session turns | `sum(computed_total_tokens)` |
+| Cache % | session turns | `sum(cache_read) / (sum(cache_read) + sum(input))` |
 | “Live” | `status='running'` | while a turn runs: 350 ms polling, faster icon animation |
 
-The line covers **every project and every chat** — it is the installation-wide counter,
-not a single-task one. The unfinished turn is included, so the numbers grow as tokens get
-written to the database.
+“Current” means the session with the freshest activity (`session.time_updated`). While you
+type in this chat, ZCode keeps updating exactly that session, so the numbers belong to the
+open task. The unfinished turn is counted too, so values grow as tokens hit the database.
+For debugging you can ask for a specific session: `/usage/latest?session=<id>`.
 
 ## Install
 

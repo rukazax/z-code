@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-31 — zcode-counters 1.2.0: показатели по текущей сессии
+
+RU: ходы, шаги и сумма считаются **только по текущей сессии/задаче** — той, у которой
+самая свежая активность (`session.time_updated`); пока ты пишешь в чате, ZCode обновляет
+именно её. Остальное без изменений: вставка справа от «Working», шрифт копируется,
+анимированные иконки, живой опрос 350 мс при активном ходе. Для отладки добавлен
+`/usage/latest?session=<id>`.
+
+EN: turns, steps and the total now cover **the current session/task only** — the one with
+the freshest activity (`session.time_updated`); while you type in a chat, ZCode keeps that
+session updated. Everything else stays: inline insertion next to “Working”, copied font,
+animated icons, 350 ms live polling during a turn. Added `/usage/latest?session=<id>`
+for debugging.
+
 ## 2026-10-31 — zcode-counters 1.1.0: счётчики в строке Working, суммарные по всем сессиям
 
 RU: строка больше не висит отдельной плашкой — оверлей находит элемент «Working»/«Работает»
