@@ -14,7 +14,6 @@ const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
 
-const MARK = 'data-zcode-counters="v1"';
 const TARGET = '/out/renderer/index.html';
 
 const installDir = path.resolve(process.argv[2] || path.join('C:\\', 'Program Files', 'ZCode'));
@@ -32,47 +31,11 @@ if (!OUT) {
 }
 
 // ---------- оверлей для index.html ----------
-const OVERLAY = `    <!-- [zcode-counters v1] полоса счётчиков: ходы/шаги/ток/с/Σ/кэш -->
-    <script>(function(){
-"use strict";
-if (document.querySelector('script[${MARK}]')) return;
-var rule = 'display:none;position:fixed;z-index:2147483000;padding:3px 12px;'
-+ 'border-radius:8px;background:rgba(13,17,23,.42);color:#c9d1d9;'
-+ 'font:12px/1.4 -apple-system,Segoe UI,sans-serif;pointer-events:none;'
-+ 'white-space:nowrap;box-shadow:0 1px 6px rgba(0,0,0,.25);letter-spacing:.2px;';
-var bar = document.createElement('div');
-bar.setAttribute('data-zcode-counters','1');
-bar.style.cssText = rule;
-var host = document.body || document.documentElement;
-host.appendChild(bar);
-var textarea = null;
-function place(){
-var cand = document.querySelector('textarea, [contenteditable="true"]');
-if (!cand) return;
-if (cand !== textarea) textarea = cand;
-var r = cand.getBoundingClientRect();
-bar.style.left = '50%';
-bar.style.transform = 'translateX(-50%)';
-bar.style.bottom = Math.max(74, (window.innerHeight - r.top) + 6) + 'px';
-bar.style.display = bar.textContent ? 'block' : 'none';
-}
-var last = '';
-function tick(){
-fetch('http://127.0.0.1:7717/usage/latest', {cache:'no-store'})
-.then(function(r){ return r.ok ? r.json && r.json() || r.text() : null; })
-.then(function(j){
-var text = '';
-try { var d = (typeof j === 'string' ? JSON.parse(j) : j);
-if (d && d.ok && d.usage && d.usage.ok && !d.usage.empty) text = d.text; } catch(e){}
-if (text !== last) { last = text; bar.textContent = text; }
-place();
-})
-.catch(function(){ if (last) { last=''; bar.textContent=''; place(); } });
-}
-setInterval(tick, 900);
-window.addEventListener('resize', place);
-})();</script>
-`;
+// Сам код оверлея лежит отдельным файлом — так его проще править и проверять.
+const OVERLAY_SRC = fs.readFileSync(path.join(__dirname, 'overlay.js'), 'utf8');
+const MARK = 'data-zcode-counters';
+const OVERLAY = '    <!-- [zcode-counters v3] счётчики в строке Working -->\n    <script>\n'
+  + OVERLAY_SRC + '    </script>\n';
 
 // ---------- read asar ----------
 const fd = fs.openSync(ASAR, 'r');
@@ -134,13 +97,11 @@ const entry = getEntry(TARGET);
 if (!entry) { console.error('Не найден ' + TARGET); process.exit(1); }
 
 const html = readFile(TARGET).toString('utf8');
-if (html.includes('data-zcode-counters')) {
-  console.log('Полоса счётчиков уже в архиве — повторный патч пропущен.');
-  process.exit(2);
-}
 if (!/<\/body>/i.test(html)) { console.error('В index.html нет </body>; прерываю.'); process.exit(1); }
 
-const patched = html.replace(/<\/body>/i, `${OVERLAY}</body>`);
+// идемпотентность: старые версии блока (v1/v2) вырезаем и ставим актуальную
+const cleaned = html.replace(/<!-- \[zcode-counters[^\n]*-->\s*<script>[\s\S]*?<\/script>\n?/g, '');
+const patched = cleaned.replace(/<\/body>/i, `${OVERLAY}</body>`);
 
 // ---------- rebuild asar ----------
 const changed = new Map([[TARGET, Buffer.from(patched, 'utf8')]]);

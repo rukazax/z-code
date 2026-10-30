@@ -1,7 +1,9 @@
 # zcode-counters · Token counters
 
-📊 **A strip above the ZCode input field:** `21 хода · 459 steps · 29 ток/с · Σ token · кэш`
-— DeepSeek-Harness-style counters, refreshed ~once a second.
+📊 **Counters on the same line as the "Working" spinner:** to the right of it you get
+`⏱ 27 · ⧉ 718 · ⚡ 66 · ▤ 149.5M · ◔ 49.7%`, using the spinner's own font and size,
+with animated icons. Numbers are **summed across all sessions** and refreshed **live**:
+350 ms while a turn is running, 1 s when idle. No session folder/name is shown.
 
 ![How it works](../assets/zcode-counters-en.svg)
 
@@ -22,7 +24,11 @@ flowchart LR
 ```
 
 - the patch is small: a `<script>` inserted into `out/renderer/index.html` inside `app.asar`;
-- no React surgery — the overlay lives on its own; no daemon → silently hidden;
+- the overlay finds the leaf element with "Working"/«Работает» text and inserts itself **right after it**,
+  copying the computed font, size and colour — so the line looks native;
+- icons are animated: opacity pulse on all of them, rotation on the cache one (`◔`);
+- React re-renders "Working" constantly — a `MutationObserver` keeps the insertion alive;
+- no React surgery; no daemon → the line stays hidden;
 - co-exists with the russifier: their patches do not intersect;
 - SHA-256 of changed files recalculated so Electron accepts the archive;
 - the original is kept in `%LOCALAPPDATA%\ZCodeCounters\app.asar.backup`.
@@ -31,11 +37,16 @@ flowchart LR
 
 | Metric | Source | Formula |
 |---|---|---|
-| Turns | `turn_usage` | completed turns of the active session |
-| Steps | `tool_usage` | tool calls in the session |
-| Tokens/s | last turn | `output_tokens / (completed_at − first_token_at)` |
-| Σ tokens | session turns | `computed_total_tokens` |
-| Cache % | session turns | `cache_read / (cache_read + input)` |
+| Turns | `turn_usage`, all sessions | `count(*)` |
+| Steps | `tool_usage`, all sessions | `count(*)` |
+| Tokens/s | freshest turn | `output_tokens / (completed_at − first_token_at)` |
+| Σ tokens | all turns | `sum(computed_total_tokens)` |
+| Cache % | all turns | `sum(cache_read) / (sum(cache_read) + sum(input))` |
+| “Live” | `status='running'` | while a turn runs: 350 ms polling, faster icon animation |
+
+The line covers **every project and every chat** — it is the installation-wide counter,
+not a single-task one. The unfinished turn is included, so the numbers grow as tokens get
+written to the database.
 
 ## Install
 

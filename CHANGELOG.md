@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-10-31 — zcode-counters 1.1.0: счётчики в строке Working, суммарные по всем сессиям
+
+RU: строка больше не висит отдельной плашкой — оверлей находит элемент «Working»/«Работает»
+и вставляется **справа от него**, копируя вычисленный шрифт, кегль и цвет (выглядит нативно).
+Показатели сокращены до иконок с анимацией: `⏱ ходы · ⧉ шаги · ⚡ ток/с · ▤ Σ · ◔ кэш %` —
+пульс `opacity` у всех и вращение у «кэша»; пока идёт ход, анимация ускоряется.
+
+Цифры **суммарные по всем сессиям и проектам** (общий счётчик установки), считаются в
+реальном времени: пока ход не завершён, он тоже учитывается, а опрос идёт раз в 350 мс
+(в покое — 1 с). Папка/название сессии из строки убраны.
+
+Вставку держит `MutationObserver` — React перерисовывает индикатор часто. Патч стал
+идемпотентным: предыдущий блок вырезается и заменяется, поэтому установка поверх старой
+версии не требует отката. Код оверлея вынесен в `assets/overlay.js`.
+
+EN: the strip is no longer a floating pill — the overlay finds the "Working" indicator and
+inserts itself **right after it**, copying the computed font, size and colour so it looks native.
+Metrics are icon-led and animated: `⏱ turns · ⧉ steps · ⚡ tok/s · ▤ Σ · ◔ cache %`, with an
+opacity pulse plus one rotating icon; the animation speeds up while a turn is running.
+
+Numbers are **summed across all sessions and projects** (an installation-wide counter) and
+updated live: the unfinished turn is included, polling runs at 350 ms while active and 1 s when
+idle. The session folder/name is no longer shown.
+
+A `MutationObserver` keeps the insertion alive through React re-renders. Patching is idempotent:
+the previous block is stripped and replaced, so re-installing over an older version works without
+a rollback. The overlay code moved to `assets/overlay.js`.
+
 ## 2026-10-31 — zcode-counters: счётчики токенов над полем ввода
 
 RU: новый пакет `zcode-counters` — полоса счётчиков как в DeepSeek Harness, над полем ввода ZCode:
