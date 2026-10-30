@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380" font-family="ui-monospace,Consolas,monospace" font-size="12">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#79c0ff"/></marker>
+    <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#7ee787"/></marker>
+  </defs>
+  <rect width="900" height="380" fill="#0d1117"/>
+  <text x="450" y="34" fill="#c9d1d9" font-size="16" text-anchor="middle">zcode-counters · counters above the input field</text>
+
+  <rect x="30" y="70" width="200" height="86" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="130" y="94" fill="#f0883e" text-anchor="middle">ZCode chat database</text>
+  <text x="130" y="114" fill="#8b949e" text-anchor="middle">turn_usage (turns, tokens,</text>
+  <text x="130" y="132" fill="#8b949e" text-anchor="middle">cache) · tool_usage (steps)</text>
+
+  <rect x="330" y="70" width="220" height="86" rx="8" fill="#161b22" stroke="#7ee787"/>
+  <text x="440" y="94" fill="#7ee787" text-anchor="middle">ctxdb · daemon</text>
+  <text x="440" y="114" fill="#8b949e" text-anchor="middle">127.0.0.1:7717</text>
+  <text x="440" y="132" fill="#8b949e" text-anchor="middle">GET /usage/latest</text>
+
+  <rect x="650" y="70" width="220" height="86" rx="8" fill="#161b22" stroke="#79c0ff"/>
+  <text x="760" y="94" fill="#79c0ff" text-anchor="middle">DOM overlay</text>
+  <text x="760" y="114" fill="#8b949e" text-anchor="middle">&lt;script&gt; в index.html</text>
+  <text x="760" y="132" fill="#8b949e" text-anchor="middle">fetch · 0.9 c · без React</text>
+
+  <line x1="230" y1="113" x2="328" y2="113" stroke="#79c0ff" marker-end="url(#ar)"/>
+  <line x1="550" y1="113" x2="648" y2="113" stroke="#79c0ff" marker-end="url(#ar)"/>
+  <text x="283" y="103" fill="#8b949e" text-anchor="middle">SQLite</text>
+  <text x="598" y="103" fill="#8b949e" text-anchor="middle">JSON</text>
+  <line x1="760" y1="158" x2="760" y2="196" stroke="#7ee787" stroke-dasharray="4 3" marker-end="url(#arg)"/>
+
+  <rect x="230" y="200" width="440" height="30" rx="6" fill="#0d1117" stroke="#7ee787"/>
+  <text x="450" y="220" fill="7ee787" font-weight="bold" text-anchor="middle" fill="#7ee787">21 ходов · 459 шагов · 29 ток/с · Σ 70.8 млн · кэш 49.9%</text>
+  <rect x="230" y="242" width="440" height="52" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="450" y="266" fill="#8b949e" text-anchor="middle">input field (textarea)</text>
+  <text x="450" y="284" fill="#6e7681" text-anchor="middle">the strip floats right above it</text>
+
+  <text x="450" y="330" fill="#8b949e" text-anchor="middle">no daemon → strip hidden · оригинал: %LOCALAPPDATA%\ZCodeCounters\app.asar.backup</text>
+  <text x="450" y="352" fill="#6e7681" text-anchor="middle">patch mechanics like zcode-ru: index.html only, SHA-256 recalculated</text>
+</svg>

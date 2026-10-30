@@ -42,6 +42,20 @@
         "zh-CN": "ZCode 本地向量记忆的安装与配置（LanceDB + multilingual-e5-small），支持整目录迁移到另一台电脑。"
       },
       "category": "developer-tools"
+    },
+    {
+      "name": "zcode-counters",
+      "source": "./plugins/zcode-counters",
+      "version": "1.0.0",
+      "description": "Полоса счётчиков токенов над полем ввода ZCode: ходы, шаги, ток/с, суммарные токены и попадание в кэш. Установка, проверка и откат.",
+      "displayName": "Счётчики токенов",
+      "displayName_i18n": {
+        "zh-CN": "Token 计数条"
+      },
+      "description_i18n": {
+        "zh-CN": "在输入框上方显示 token 计数条：轮次、步骤、token/s、累计与缓存命中率。"
+      },
+      "category": "utilities"
     }
   ]
 }

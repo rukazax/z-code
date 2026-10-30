@@ -1,0 +1,12 @@
+{
+  "name": "zcode-counters",
+  "displayName": "Счётчики токенов",
+  "version": "1.0.0",
+  "description": "Полоса счётчиков над полем ввода: ходы, шаги, ток/с, суммарные токены и попадание в кэш. Установка, проверка и откат.",
+  "author": {
+    "name": "rukazax"
+  },
+  "license": "MIT",
+  "skills": "skills",
+  "commands": "commands"
+}

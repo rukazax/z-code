@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-10-31 — zcode-counters: счётчики токенов над полем ввода
+
+RU: новый пакет `zcode-counters` — полоса счётчиков как в DeepSeek Harness, над полем ввода ZCode:
+**ходы · шаги · ток/с · Σ токенов · попадание в кэш**. Патчит только `out/renderer/index.html`
+внутри `app.asar` — вставляет DOM-оверлей (~1.6 КБ), который раз в ~0.9 с читает
+`GET /usage/latest` локального демона ctxdb и обновляет один текстовый узел. Демона нет —
+полоса тихо скрыта. Данные: «Ходы» — `turn_usage`, «Шаги» — `tool_usage`, «Ток/с» —
+`output_tokens / (completed_at − first_token_at)` последнего хода, «Σ» — сумма `computed_total_tokens`,
+«Кэш» — `cache_read / (cache_read + input)` по сессии.
+
+Совместим с русификатором (правки не пересекаются), SHA-256 изменённого файла пересчитывается,
+оригинал сохраняется в `%LOCALAPPDATA%\ZCodeCounters\app.asar.backup`, есть `uninstall.ps1`.
+Проверено на живой сессии: 21 ход, 459 шагов, кэш 49.9%. Обновление ZCode сбрасывает строку —
+установку повторить; при изменении структуры бандла патчер выходит с понятной ошибкой, ничего не записав.
+
+Оформление: манифест, команда `/zcode-counters` (статус, установить, откат), скилл `zcode-counters`,
+двуязычные `docs/ru/zcode-counters.md` и `docs/en/zcode-counters.md`, схема `assets/zcode-counters-{ru,en}.svg`.
+
+EN: new `zcode-counters` package — a DeepSeek-Harness-style token strip above the ZCode input
+field: **turns · steps · tok/s · Σ tokens · cache hit**. It patches only `out/renderer/index.html`
+inside `app.asar`, injecting a ~1.6 KB DOM overlay that polls `GET /usage/latest` on the local
+ctxdb daemon every ~0.9 s and updates one text node. No daemon → the strip stays hidden. Data:
+turns from `turn_usage`, steps from `tool_usage`, tok/s from the last turn's
+`output_tokens / (completed_at − first_token_at)`, Σ from `computed_total_tokens`, cache from
+`cache_read / (cache_read + input)`.
+
+Co-exists with the russifier, SHA-256 recalculated for the changed file, the original is kept in
+`%LOCALAPPDATA%\ZCodeCounters\app.asar.backup`, `uninstall.ps1` restores it. Verified on a live
+session: 21 turns, 459 steps, cache 49.9%. A ZCode update removes the strip — apply again; if the
+bundle layout changes, the patcher exits with a clear message and writes nothing.
+
 ## 2026-10-31 — routine-miner: скилы из повторяющихся задач
 
 RU: новый пакет `routine-miner` — майнер типовых действий. Он читает запросы пользователя из индекса
