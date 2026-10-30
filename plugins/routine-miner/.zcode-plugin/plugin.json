@@ -1,0 +1,12 @@
+{
+  "name": "routine-miner",
+  "displayName": "Скилы из рутин",
+  "version": "1.0.0",
+  "description": "Майнер повторяющихся действий: превращает частые задачи в скилы и глобальные правила и подставляет их автоматически.",
+  "author": {
+    "name": "rukazax"
+  },
+  "license": "MIT",
+  "skills": "skills",
+  "commands": "commands"
+}

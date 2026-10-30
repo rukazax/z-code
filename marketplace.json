@@ -14,6 +14,34 @@
         "zh-CN": "ZCode 界面俄语本地化：6999 条字符串、菜单、对话框与自动化模板，支持安装、检查与回滚。"
       },
       "category": "utilities"
+    },
+    {
+      "name": "routine-miner",
+      "source": "./plugins/routine-miner",
+      "version": "1.0.0",
+      "description": "Майнер повторяющихся действий: превращает частые задачи в скилы и глобальные правила и подставляет их автоматически.",
+      "displayName": "Скилы из рутин",
+      "displayName_i18n": {
+        "zh-CN": "例行任务技能"
+      },
+      "description_i18n": {
+        "zh-CN": "例行任务挖掘器：把重复任务打包成技能与全局规则，并在相似请求出现时自动注入。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "ctxdb-setup",
+      "source": "./plugins/ctxdb-setup",
+      "version": "1.0.0",
+      "description": "Установка и настройка локальной векторной памяти ZCode (LanceDB + multilingual-e5-small) и перенос на другой компьютер.",
+      "displayName": "Векторная память ctxdb",
+      "displayName_i18n": {
+        "zh-CN": "ctxdb 向量记忆"
+      },
+      "description_i18n": {
+        "zh-CN": "ZCode 本地向量记忆的安装与配置（LanceDB + multilingual-e5-small），支持整目录迁移到另一台电脑。"
+      },
+      "category": "developer-tools"
     }
   ]
 }

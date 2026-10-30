@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="460" viewBox="0 0 900 460" role="img" aria-label="ctxdb: источники данных, векторный индекс, демон и хуки ZCode">
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#79c0ff"/>
+    </marker>
+    <marker id="g" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#7ee787"/>
+    </marker>
+    <marker id="o" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f0883e"/>
+    </marker>
+  </defs>
+  <rect width="900" height="460" fill="#0d1117"/>
+
+  <text x="24" y="36" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="20" font-weight="700" fill="#79c0ff">ctxdb: локальная векторная память</text>
+  <text x="24" y="60" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="12" fill="#8b949e">Индекс всей истории → тёплый демон → контекст в каждом промпте, без API</text>
+
+  <rect x="24" y="95" width="230" height="46" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="36" y="117" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="11" font-weight="700" fill="#c9d1d9">db.sqlite</text>
+  <text x="36" y="133" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10" fill="#8b949e">чаты и сообщения</text>
+  <rect x="24" y="151" width="230" height="46" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="36" y="173" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="11" font-weight="700" fill="#c9d1d9">tasks-index.sqlite</text>
+  <text x="36" y="189" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10" fill="#8b949e">задачи, проекты, todo</text>
+  <rect x="24" y="207" width="230" height="46" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="36" y="229" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="11" font-weight="700" fill="#c9d1d9">memories / AGENTS.md</text>
+  <text x="36" y="245" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10" fill="#8b949e">память агента и docs</text>
+
+  <path d="M254 118 H270 M254 174 H270 M254 230 H270 M270 118 V230" fill="none" stroke="#79c0ff" stroke-width="1.6"/>
+  <path d="M270 174 H286" fill="none" stroke="#79c0ff" stroke-width="2" marker-end="url(#a)"/>
+  <text x="168" y="272" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="9.5" fill="#8b949e">watcher WAL → ingest</text>
+
+  <rect x="290" y="95" width="200" height="158" rx="10" fill="#161b22" stroke="#79c0ff" stroke-width="1.4"/>
+  <text x="390" y="125" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="13" font-weight="700" fill="#79c0ff">LanceDB</text>
+  <text x="390" y="148" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#c9d1d9">чанки 900 / overlap 120</text>
+  <text x="390" y="168" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#c9d1d9">вектор 384d</text>
+  <text x="390" y="188" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#8b949e">kind · project · task_id</text>
+  <text x="390" y="212" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#7ee787">поиск 20-25 мс</text>
+
+  <path d="M490 174 H512" fill="none" stroke="#79c0ff" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="516" y="95" width="360" height="158" rx="10" fill="#12261c" stroke="#7ee787" stroke-width="1.4"/>
+  <text x="696" y="125" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="13" font-weight="700" fill="#7ee787">ctxd · 127.0.0.1:7717</text>
+  <text x="696" y="148" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#c9d1d9">multilingual-e5-small 384d q8 · CPU</text>
+  <text x="696" y="168" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#c9d1d9">RAM-индекс: точный косинус</text>
+  <text x="696" y="188" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#c9d1d9">ранг 0.68·cos + 0.32·лексика</text>
+  <text x="696" y="212" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#f0883e">0 токенов на поиск</text>
+
+  <path d="M696 253 V281" fill="none" stroke="#7ee787" stroke-width="2" marker-start="url(#g)" marker-end="url(#g)"/>
+
+  <rect x="516" y="285" width="360" height="72" rx="10" fill="#161b22" stroke="#79c0ff" stroke-width="1.4"/>
+  <text x="696" y="312" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="700" fill="#79c0ff">UserPromptSubmit hook</text>
+  <text x="696" y="334" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#c9d1d9">полный путь хука 180-300 мс</text>
+
+  <path d="M516 321 H494" fill="none" stroke="#f0883e" stroke-width="2" marker-end="url(#o)"/>
+
+  <rect x="290" y="285" width="200" height="72" rx="10" fill="#161b22" stroke="#f0883e" stroke-width="1.4"/>
+  <text x="390" y="312" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="700" fill="#f0883e">промпт агента</text>
+  <text x="390" y="334" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#c9d1d9">+ &lt;recall&gt; ≤ 900 симв.</text>
+  <text x="390" y="350" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#8b949e">≈ 240 токенов</text>
+
+  <rect x="24" y="285" width="240" height="72" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="144" y="312" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="700" fill="#7ee787">всё локально</text>
+  <text x="144" y="334" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#c9d1d9">модель ~129 МБ в кэше</text>
+  <text x="144" y="350" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="10.5" fill="#8b949e">без API и облака</text>
+
+  <text x="24" y="398" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="11" fill="#8b949e">watcher на WAL: доиндексация через ~0.4 с после записи · страховочный опрос раз в 60 с</text>
+  <text x="24" y="420" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="11" fill="#8b949e">SessionStart поднимает демон · Stop дописывает сессию, но срабатывает нестабильно</text>
+  <text x="24" y="442" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace" font-size="11" fill="#f0883e">Перенос: portable/home + portable/appdata + ctxdb-data → ZCode закрыт → zc restore</text>
+</svg>

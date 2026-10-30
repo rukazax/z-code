@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="ZCode · Русская локализация">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="ZCode · Плагины и расширения">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#06111c"/>
@@ -14,16 +14,16 @@
   <circle cx="1140" cy="50" r="220" fill="#22d3ee" opacity="0.10"/>
   <circle cx="170" cy="310" r="200" fill="#4b6bfb" opacity="0.12"/>
   <rect x="0" y="0" width="1280" height="6" fill="url(#accent)"/>
-  <text x="72" y="128" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="52" font-weight="700" fill="#ffffff">ZCode · Русская локализация</text>
-  <text x="74" y="176" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="24" fill="#b9cfe6">6999 строк · меню · диалоги · откат</text>
+  <text x="72" y="128" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="52" font-weight="700" fill="#ffffff">ZCode · Плагины и расширения</text>
+  <text x="74" y="176" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="24" fill="#b9cfe6">русский интерфейс · скилы из рутин · векторная память</text>
   <g font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" fill="#dfeffb">
     <rect x="72" y="214" width="101" height="38" rx="19" fill="#ffffff" opacity="0.10"/>
     <text x="94" y="239">zcode-ru</text>
-    <rect x="189" y="214" width="82" height="38" rx="19" fill="#ffffff" opacity="0.10"/>
-    <text x="211" y="239">plugin</text>
-    <rect x="288" y="214" width="92" height="38" rx="19" fill="#ffffff" opacity="0.10"/>
-    <text x="310" y="239">RU / EN</text>
-    <rect x="395" y="214" width="54" height="38" rx="19" fill="#ffffff" opacity="0.10"/>
-    <text x="417" y="239">MIT</text>
+    <rect x="189" y="214" width="140" height="38" rx="19" fill="#ffffff" opacity="0.10"/>
+    <text x="211" y="239">routine-miner</text>
+    <rect x="345" y="214" width="125" height="38" rx="19" fill="#ffffff" opacity="0.10"/>
+    <text x="367" y="239">ctxdb-setup</text>
+    <rect x="486" y="214" width="54" height="38" rx="19" fill="#ffffff" opacity="0.10"/>
+    <text x="508" y="239">MIT</text>
   </g>
 </svg>

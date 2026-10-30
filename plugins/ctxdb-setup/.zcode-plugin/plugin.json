@@ -1,0 +1,12 @@
+{
+  "name": "ctxdb-setup",
+  "displayName": "Векторная память ctxdb",
+  "version": "1.0.0",
+  "description": "Установка и настройка локальной векторной памяти ZCode (LanceDB + multilingual-e5-small) и перенос на другой компьютер.",
+  "author": {
+    "name": "rukazax"
+  },
+  "license": "MIT",
+  "skills": "skills",
+  "commands": "commands"
+}

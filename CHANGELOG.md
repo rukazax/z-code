@@ -1,5 +1,91 @@
 # Changelog
 
+## 2026-10-31 — routine-miner: скилы из повторяющихся задач
+
+RU: новый пакет `routine-miner` — майнер типовых действий. Он читает запросы пользователя из индекса
+ctxdb (`kind=chat_user`), дедуплицирует их и кластеризует по эмбеддингам `multilingual-e5-small`:
+косинус ≥ 0.87, минимум два запроса в кластере. Кластер превращается в `routines\<id>\SKILL.md` —
+суть, до трёх шагов «как это обычно делалось» из прошлых ответов агента, триггеры и правила
+применения — и запись в `routines\routines.json` с `uses`, `status` и путём к скиллу. Каждая рутина
+дополнительно индексируется чанком `kind=routine`, поэтому находится и обычным поиском.
+
+Подстановка: на `UserPromptSubmit` хук ищет лучшую рутину по нечёткому покрытию слов (точное
+совпадение, префикс для слов от 5 символов, общий корень из 4 символов) и порогу 0.38. Ниже порога
+блок `<routine>` не вставляется — 0 токенов. Сама навигация в блоке (имя, статус, `uses`, суть) стоит
+~40-60 токенов, вместе с абсолютным путём к скиллу — ~130; полный `SKILL.md` (~250-350 токенов)
+читается только по требованию.
+
+Проверено на живой базе: 3 рутины, 8 суммарных повторов. Реальный кейс — четыре запроса про
+подключение GitHub-аккаунта, собранные в рутину `github-plugin-github-zcode-plugins-offic`;
+`routines test "подключим аккаунт github в zcode"` даёт score 0.51, хук подставляет блок вместо
+повторного разбора. Ограничения записаны честно: мало истории — мало рутин, стемминг наивный,
+сложные процедуры майнер не заменяет.
+
+Оформление: манифест, команда `/routine-miner` (статус, скан, проверить, забыть, открыть), скилл
+`routine-miner`, двуязычный README, страницы `docs/ru/routine-miner.md` и `docs/en/routine-miner.md`,
+схемы `assets/routine-miner-{ru,en}.svg`, запись в `marketplace.json`.
+
+EN: new `routine-miner` package — a miner for repeated actions. It reads user prompts from the ctxdb
+index (`kind=chat_user`), de-duplicates and clusters them with `multilingual-e5-small` embeddings:
+cosine ≥ 0.87, at least two prompts per cluster. A cluster becomes `routines\<id>\SKILL.md` — summary,
+up to three "how it was usually done" steps from past agent answers, triggers and application rules —
+plus a `routines\routines.json` entry with `uses`, `status` and the skill path. Every routine is also
+indexed as a `kind=routine` chunk, so regular search finds it too.
+
+Injection: on `UserPromptSubmit` the hook matches the best routine by fuzzy word coverage (exact match,
+prefix for words of 5+ characters, shared four-character root) at a 0.38 threshold. Below it no
+`<routine>` block is injected — 0 tokens. The navigation part of the block (name, status, `uses`,
+summary) costs ~40-60 tokens, ~130 with the absolute skill path; the full `SKILL.md` (~250-350 tokens)
+is read only on demand.
+
+Verified on a live database: 3 routines, 8 total repeats. A real case is four prompts about connecting
+a GitHub account packed into the `github-plugin-github-zcode-plugins-offic` routine;
+`routines test "подключим аккаунт github в zcode"` returns score 0.51 and the hook injects the block
+instead of re-deriving. Limitations are stated plainly: little history means few routines, stemming is
+naive, and complex procedures are not replaced.
+
+Delivery: manifest, `/routine-miner` command (status, scan, test, forget, open), the `routine-miner`
+skill, a bilingual README, `docs/ru/routine-miner.md` and `docs/en/routine-miner.md`,
+`assets/routine-miner-{ru,en}.svg` diagrams and a `marketplace.json` entry.
+
+## 2026-10-31 — ctxdb-setup: векторная память ZCode
+
+RU: новый пакет `ctxdb-setup` — установка, диагностика и перенос локальной векторной памяти ctxdb
+(LanceDB + `multilingual-e5-small`, 384d q8 ONNX CPU). Главная часть — полный плейбук установки:
+пререквизиты (Node.js LTS и **обязательный** Visual C++ Redistributable 2015-2022 x64 — без него
+native LanceDB падает на `dlopen`), получение каталога ctxdb, `npm install` с разрешёнными install
+scripts для `onnxruntime-node` и `sharp` (иначе в `node_modules` нет DLL и `.node`), `doctor`,
+`ingest`, `daemon start`, `install-hooks`. Для каждого шага — проверка и разбор типовых FAIL.
+
+Цифры: поиск в демоне 20-25 мс, полный путь хука 180-300 мс, 0 токенов на поиск, вставка
+`<recall>` ≤ 900 символов ≈ 240 токенов, модель ~129 МБ в кэше. Перенос: `zc backup --with-projects`
+на старой машине, копирование всей папки `Documents\z-code`, `zc restore --dry-run` и `zc restore`
+на новой при **закрытом** ZCode; возвращаются оба дерева (`home`, `appdata\.zcode`), пути хуков и
+плагинов перезаписываются. Снимок по умолчанию содержит секреты — исключить: `--no-credentials`.
+
+Оформление: манифест, команда `/ctxdb` (статус, установить, демон, хуки, переезд, поиск, проекты),
+скилл `ctxdb-setup`, двуязычный README, страницы `docs/ru/ctxdb-setup.md` и
+`docs/en/ctxdb-setup.md`, схемы `assets/ctxdb-{ru,en}.svg`, запись в `marketplace.json`.
+
+EN: new `ctxdb-setup` package — installation, diagnostics and migration for the local ctxdb vector
+memory (LanceDB + `multilingual-e5-small`, 384d q8 ONNX CPU). The core is a complete install playbook:
+prerequisites (Node.js LTS and a **mandatory** Visual C++ Redistributable 2015-2022 x64 — without it
+native LanceDB fails on `dlopen`), obtaining the ctxdb directory, `npm install` with install scripts
+allowed for `onnxruntime-node` and `sharp` (otherwise `node_modules` has no DLL or `.node`), `doctor`,
+`ingest`, `daemon start`, `install-hooks`. Every step has a verification and a mapping of typical
+FAILs to causes.
+
+Numbers: 20-25 ms search inside the daemon, 180-300 ms full hook path, 0 tokens per search, a
+`<recall>` injection of ≤ 900 chars ≈ 240 tokens, a ~129 MB model cache. Migration:
+`zc backup --with-projects` on the old machine, copy the whole `Documents\z-code` folder, then
+`zc restore --dry-run` and `zc restore` on the new one with ZCode **closed**; both trees (`home`,
+`appdata\.zcode`) are restored and hook/plugin paths are rewritten. The snapshot contains secrets by
+default — exclude them with `--no-credentials`.
+
+Delivery: manifest, `/ctxdb` command (status, install, daemon, hooks, migration, search, projects), the
+`ctxdb-setup` skill, a bilingual README, `docs/ru/ctxdb-setup.md` and `docs/en/ctxdb-setup.md`,
+`assets/ctxdb-{ru,en}.svg` diagrams and a `marketplace.json` entry.
+
 ## 2026-10-30 — zcode-ru: русский интерфейс ZCode
 
 RU: новый пакет `zcode-ru` — русский интерфейс ZCode Desktop 3.16.3. Перевод собран из десяти
