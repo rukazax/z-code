@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-10-31 — zcode-counters 1.4.0: смешанная семантика счётчиков
+
+RU: **ток/с и кэш % теперь считаются по всем сессиям** (это свойство канала и префикса,
+а не одного чата), а **ходы, шаги и сумма остаются по текущей сессии/задаче**.
+Формулы: скорость — последний по времени ход любой сессии, кэш — `sum(cache_read) /
+(sum(cache_read) + sum(input))` по всей базе. Оверлей не менялся, только данные демона.
+
+EN: **tokens/s and cache % are now computed across all sessions** (a channel/prefix
+property, not a chat one), while **turns, steps and the total stay per current
+session/task**. Formulas: speed from the freshest turn of any session, cache as
+`sum(cache_read) / (sum(cache_read) + sum(input))` over the whole database. The overlay
+itself did not change — only the daemon data.
+
 ## 2026-10-31 — zcode-counters 1.3.0: подписи после цифр
 
 RU: после каждого числа появилась подпись, как в DeepSeek Harness: **ходов · шагов ·

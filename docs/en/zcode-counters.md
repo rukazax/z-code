@@ -3,8 +3,9 @@
 📊 **Counters on the same line as the "Working" spinner:** to the right of it you get
 `⏱ 26 ходов · ⧉ 558 шагов · ⚡ 87 ток/с · ▤ 105.9M ток · ◔ 49.8% кэш`, using the
 spinner's own font and size, with labels and animated icons. Turns, steps and the total
-cover **the current session/task only** and refresh **live**: 350 ms while a turn is
-running, 1 s when idle. No session folder/name is shown.
+follow **the current session/task**; speed and cache are **summed across all sessions**.
+Refreshed live: 350 ms while a turn is running, 1 s when idle.
+No session folder/name is shown.
 
 ![How it works](../assets/zcode-counters-en.svg)
 
@@ -38,17 +39,19 @@ flowchart LR
 
 | Metric | Source | Formula |
 |---|---|---|
-| Turns | `turn_usage` of the current session | `count(*)` |
-| Steps | `tool_usage` of the current session | `count(*)` |
-| Tokens/s | last turn of the session | `output_tokens / (completed_at − first_token_at)` |
-| Σ tokens | session turns | `sum(computed_total_tokens)` |
-| Cache % | session turns | `sum(cache_read) / (sum(cache_read) + sum(input))` |
-| “Live” | `status='running'` | while a turn runs: 350 ms polling, faster icon animation |
+| Turns | `turn_usage`, **current session** | `count(*)` |
+| Steps | `tool_usage`, **current session** | `count(*)` |
+| Σ tokens | **current session** turns | `sum(computed_total_tokens)` |
+| Tokens/s | **all sessions** | freshest turn: `output_tokens / (completed_at − first_token_at)` |
+| Cache % | **all sessions** | `sum(cache_read) / (sum(cache_read) + sum(input))` |
+| “Live” | any turn with `status='running'` | 350 ms polling, faster icon animation |
 
-“Current” means the session with the freshest activity (`session.time_updated`). While you
-type in this chat, ZCode keeps updating exactly that session, so the numbers belong to the
-open task. The unfinished turn is counted too, so values grow as tokens hit the database.
-For debugging you can ask for a specific session: `/usage/latest?session=<id>`.
+The split is deliberate: **task volume** (turns, steps, total) follows the current
+session/task, while **channel quality** (speed and cache hit) is measured across the whole
+installation — it is a provider/prefix property, not a chat one.
+“Current” means the session with the freshest activity (`session.time_updated`); while you
+type in this chat, ZCode keeps updating exactly that session. The unfinished turn is counted
+too. For debugging you can ask for a specific session: `/usage/latest?session=<id>`.
 
 ## Install
 
