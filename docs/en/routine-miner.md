@@ -26,7 +26,7 @@ flowchart LR
     S[User prompts<br/>kind=chat_user] --> C[Clusters<br/>e5-small, cos ≥ 0.87]
     C --> K[SKILL.md ×N<br/>steps + triggers]
     K --> R[routines.json<br/>id, uses, status]
-    R --> H[UserPromptSubmit hook<br/>word coverage ≥ 0.38]
+    R --> H[UserPromptSubmit hook<br/>word coverage ≥ 0.45]
     H --> B[Routine block<br/>~40-60 tokens]
     B --> A[Agent reads one SKILL.md]
     H -. no match .-> Z[0 tokens]
@@ -39,7 +39,7 @@ flowchart LR
    routine. It gets a `SKILL.md`, a `routines.json` entry and a `kind=routine`
    chunk in the vector index.
 3. On a new prompt the hook matches a routine by fuzzy word coverage; the
-   threshold is **0.38**.
+   threshold is **0.45**.
 
 ## Architecture
 
@@ -114,7 +114,7 @@ The prompt received this block (the miner's templates are Russian):
 </routine>
 ```
 
-`score 0.51` was measured on "подключим аккаунт github в zcode": above the 0.38
+`score 0.51` was measured on "подключим аккаунт github в zcode": above the 0.45
 threshold, but not an exact match, and the agent knows that.
 
 ## Management
@@ -132,7 +132,7 @@ threshold, but not an exact match, and the agent knows that.
 - Little history means few routines: a cluster needs at least two similar
   prompts.
 - Stemming is naive: a shared four-character root, so short words can produce
-  false matches. The 0.38 threshold cuts most of the noise, not all of it.
+  false matches. The 0.45 threshold cuts most of the noise, not all of it.
 - Steps come from short agent answers, not from the full log.
 - The miner does not replace complex hand-written skills with checks and branches.
 - Windows only: paths, CLI and hooks target this installation. ✅

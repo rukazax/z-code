@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-31 — routine-miner 1.1.0: точность срабатывания
+
+RU: порог поднят с 0.38 до **0.45**, а скоринг переделан: у каждого слова появился вес
+по редкости (IDF по рутинам), и совпадение засчитывается уверенно только при наличии
+**якоря** — слова, уникального для конкретной рутины. Без якоря счёт гасится втрое.
+Калибровка на живых промптах (`tools/calibrate-routines.mjs`): реальные повторы дают
+0.46–0.80, случайные совпадения — 0.01–0.41. Проверка через `/hook/prompt`:
+«снова подключи github…» → блок есть; «Добавь после цифр…» и «Подними порог…» → блока нет.
+
+EN: threshold raised from 0.38 to **0.45**, and scoring reworked: every word is weighted by
+rarity (IDF across routines), and a match only counts confidently when there is an **anchor** —
+a word unique to that routine. Without an anchor the score is damped threefold. Calibrated on
+live prompts (`tools/calibrate-routines.mjs`): real repeats score 0.46–0.80, accidental matches
+0.01–0.41. Verified through `/hook/prompt`: “снова подключи github…” injects the block;
+“Добавь после цифр…” and “Подними порог…” do not.
+
 ## 2026-10-31 — zcode-counters 1.4.0: смешанная семантика счётчиков
 
 RU: **ток/с и кэш % теперь считаются по всем сессиям** (это свойство канала и префикса,
