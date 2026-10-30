@@ -1,0 +1,11 @@
+{
+  "name": "zcode-ru",
+  "version": "1.0.0",
+  "description": "Русская локализация интерфейса ZCode: 6999 строк каталога, меню, диалоги, шаблоны автоматизаций. Установка, проверка и откат.",
+  "author": {
+    "name": "zcode-ru"
+  },
+  "skills": "./skills",
+  "commands": "./commands",
+  "hooks": "./hooks/hooks.json"
+}

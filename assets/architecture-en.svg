@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="640" viewBox="0 0 1220 640" role="img" aria-label="zcode-ru: how the translation is built and applied">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#06111c"/>
+      <stop offset="60%" stop-color="#0b2331"/>
+      <stop offset="100%" stop-color="#0e3c4a"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4b9bd8"/>
+    </marker>
+    <marker id="arrow-dash" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#e2784b"/>
+    </marker>
+  </defs>
+  <rect width="1220" height="640" fill="url(#bg)"/>
+  <text x="40" y="52" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff">zcode-ru: how the translation is built and applied</text>
+  <text x="40" y="78" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="14" fill="#8fb4cc">The ru-RU catalog is assembled from public localizations and checked against the installed version</text>
+
+  <rect x="40" y="110" width="250" height="92" rx="14" fill="#ffffff" opacity="0.055" stroke="#7fd8ea" stroke-opacity="0.28" stroke-width="1.4"/>
+  <text x="165" y="144" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#e8f1fb">ZCode localizations</text>
+  <text x="165" y="168" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">10 repositories on GitHub</text>
+  <rect x="370" y="110" width="250" height="92" rx="14" fill="#ffffff" opacity="0.055" stroke="#7fd8ea" stroke-opacity="0.28" stroke-width="1.4"/>
+  <text x="495" y="144" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#e8f1fb">Merge and checks</text>
+  <text x="495" y="168" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">placeholders, duplicates,</text>
+  <text x="495" y="188" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">source priority</text>
+  <rect x="700" y="110" width="250" height="92" rx="14" fill="#22d3ee" fill-opacity="0.13" stroke="#22d3ee" stroke-opacity="0.55"/>
+  <text x="825" y="144" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#ffffff">ru-RU.json</text>
+  <text x="825" y="168" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">6999 catalog keys</text>
+  <rect x="980" y="110" width="200" height="92" rx="14" fill="#ffffff" opacity="0.055" stroke="#7fd8ea" stroke-opacity="0.28" stroke-width="1.4"/>
+  <text x="1080" y="144" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#e8f1fb">en-US reference</text>
+  <text x="1080" y="168" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">taken from the</text>
+  <text x="1080" y="188" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">installed ZCode 3.16.3</text>
+  <path d="M 290 156 L 370 156" fill="none" stroke="#4b9bd8" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 620 156 L 700 156" fill="none" stroke="#4b9bd8" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 980 156 L 950 156" fill="none" stroke="#4b9bd8" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="40" y="250" width="250" height="100" rx="14" fill="#ffffff" opacity="0.055" stroke="#7fd8ea" stroke-opacity="0.28" stroke-width="1.4"/>
+  <text x="165" y="284" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#e8f1fb">Installed ZCode</text>
+  <text x="165" y="308" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">resources/app.asar</text>
+  <rect x="370" y="250" width="250" height="100" rx="14" fill="#ffffff" opacity="0.055" stroke="#7fd8ea" stroke-opacity="0.28" stroke-width="1.4"/>
+  <text x="495" y="284" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#e8f1fb">patch.js</text>
+  <text x="495" y="308" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">catalog · menu · dialogs</text>
+  <text x="495" y="328" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">SHA-256 recalculated</text>
+  <rect x="700" y="250" width="250" height="100" rx="14" fill="#22d3ee" fill-opacity="0.13" stroke="#22d3ee" stroke-opacity="0.55"/>
+  <text x="825" y="284" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#ffffff">Patched app.asar</text>
+  <text x="825" y="308" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">same keys,</text>
+  <text x="825" y="328" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">unchanged logic</text>
+  <path d="M 290 300 L 370 300" fill="none" stroke="#4b9bd8" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 620 300 L 700 300" fill="none" stroke="#4b9bd8" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 825 202 L 520 250" fill="none" stroke="#4b9bd8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="672" y="218" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="12.5" fill="#8fb4cc">catalog</text>
+  <rect x="370" y="400" width="250" height="100" rx="14" fill="#ffffff" opacity="0.055" stroke="#7fd8ea" stroke-opacity="0.28" stroke-width="1.4"/>
+  <text x="495" y="434" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#e8f1fb">install.ps1</text>
+  <text x="495" y="458" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">UAC · original backup</text>
+  <text x="495" y="478" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">in-place write while running</text>
+  <rect x="700" y="400" width="250" height="100" rx="14" fill="#ffffff" opacity="0.055" stroke="#7fd8ea" stroke-opacity="0.28" stroke-width="1.4"/>
+  <text x="825" y="434" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#e8f1fb">ZCode in Russian</text>
+  <text x="825" y="458" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">after restarting</text>
+  <text x="825" y="478" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">the app</text>
+  <rect x="40" y="400" width="250" height="100" rx="14" fill="#ffffff" opacity="0.055" stroke="#7fd8ea" stroke-opacity="0.28" stroke-width="1.4"/>
+  <text x="165" y="434" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#e8f1fb">uninstall.ps1</text>
+  <text x="165" y="458" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#a9c2d8">restore from backup</text>
+  <path d="M 495 350 L 495 400" fill="none" stroke="#4b9bd8" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 620 450 L 700 450" fill="none" stroke="#4b9bd8" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 370 450 L 300 450" fill="none" stroke="#e2784b" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-dash)"/>
+  <text x="335" y="440" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="12" fill="#e2a08a">rollback</text>
+  <text x="40" y="580" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#e2a08a">A ZCode update restores the original app.asar — the localization has to be applied again.</text>
+  <text x="40" y="604" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="13.5" fill="#8fb4cc">Backup: %LOCALAPPDATA%/ZCodeRu/app.asar.backup — the rollback script restores it.</text>
+</svg>

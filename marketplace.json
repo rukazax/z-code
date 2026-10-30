@@ -1,0 +1,19 @@
+{
+  "name": "rukazax-z-code",
+  "plugins": [
+    {
+      "name": "zcode-ru",
+      "source": "./plugins/zcode-ru",
+      "version": "1.0.0",
+      "description": "Русская локализация интерфейса ZCode: 6999 строк каталога, меню, диалоги, шаблоны автоматизаций. Установка, проверка и откат.",
+      "displayName": "ZCode на русском",
+      "displayName_i18n": {
+        "zh-CN": "ZCode 俄语界面"
+      },
+      "description_i18n": {
+        "zh-CN": "ZCode 界面俄语本地化：6999 条字符串、菜单、对话框与自动化模板，支持安装、检查与回滚。"
+      },
+      "category": "utilities"
+    }
+  ]
+}

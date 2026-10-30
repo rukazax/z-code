@@ -1,0 +1,32 @@
+# Бинарники, архивы и локальные данные
+*.asar
+*.asar.*
+*.exe
+*.zip
+*.7z
+
+# Временные каталоги сборки
+build/
+out/
+tmp/
+temp/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Редакторы и ОС
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Локальные секреты и отчёты
+_secrets/
+*.local.json
+.env
