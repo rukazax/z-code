@@ -1,4 +1,4 @@
-// zcode-counters: добавляет полосу счётчиков над полем ввода ZCode
+﻿// zcode-counters: добавляет полосу счётчиков над полем ввода ZCode
 // (ходы · шаги · ток/с · Σ токенов · попадание в кэш) — по образцу счётчиков,
 // как в DeepSeek Harness.
 //
@@ -34,7 +34,7 @@ if (!OUT) {
 // Сам код оверлея лежит отдельным файлом — так его проще править и проверять.
 const OVERLAY_SRC = fs.readFileSync(path.join(__dirname, 'overlay.js'), 'utf8');
 const MARK = 'data-zcode-counters';
-const OVERLAY = '    <!-- [zcode-counters v3] счётчики в строке Working -->\n    <script>\n'
+const OVERLAY = '    <!-- [zcode-counters v4] счётчики в строке Working -->\n    <script>\n'
   + OVERLAY_SRC + '    </script>\n';
 
 // ---------- read asar ----------
@@ -156,3 +156,4 @@ fs.closeSync(fd);
 
 console.log('Готово: патченный архив с полосой счётчиков записан в ' + OUT);
 process.exit(0);
+

@@ -1,9 +1,7 @@
-/* zcode-counters v3 — счётчики в одну строку с индикатором «Working».
-   Ищет листовой элемент с текстом «Работает»/«Working»/«运行中», вставляется
-   справа от него, копирует вычисленный шрифт и цвет. Анимированные иконки —
-   CSS-пульс/вращение; пока идёт ход (running) — анимация ускоряется.
-   Путь/название сессии не показываем.
-   Данные: GET http://127.0.0.1:7717/usage/latest (раз в 350 мс). */
+/* zcode-counters v4 — счётчики в одну строку с индикатором «Working».
+   Справа от бегунка: иконки + значения + подписи как в DeepSeek Harness:
+   «ходов», «шагов», «ток/с», «ток», «кэш».
+   Данные: GET http://127.0.0.1:7717/usage/latest (350 мс в работе, 1 с в покое). */
 (function () {
   "use strict";
 
@@ -26,9 +24,9 @@
 
   var strip = document.createElement("span");
   strip.id = ID;
-  strip.setAttribute("data-zcode-counters", "v2");
+  strip.setAttribute("data-zcode-counters", "v4");
 
-  function mkItem(iconChar, cls, initial) {
+  function mkItem(iconChar, cls, label) {
     var wrap = document.createElement("span");
     wrap.className = "zcc-item";
     var ico = document.createElement("span");
@@ -36,21 +34,25 @@
     ico.textContent = iconChar;
     var val = document.createElement("span");
     val.className = "zcc-val";
-    val.textContent = initial;
+    val.textContent = "—";
+    var lbl = document.createElement("span");
+    lbl.className = "zcc-lbl";
+    lbl.textContent = label;
     var sep = document.createElement("span");
     sep.className = "zcc-sep";
     sep.textContent = "·";
     wrap.appendChild(ico);
     wrap.appendChild(val);
-    return { wrap: wrap, ico: ico, val: val, sep: sep };
+    wrap.appendChild(lbl);
+    return { wrap: wrap, ico: ico, val: val, lbl: lbl, sep: sep };
   }
 
-  // иконки: таймер ходов, шаги, скорость, сумма, кэш
-  var turns = mkItem("⏱", "", "—");
-  var steps = mkItem("⧉", "", "—");
-  var speed = mkItem("⚡", "", "—");
-  var total = mkItem("▤", "", "—");
-  var cache = mkItem("◔", "spin", "—");
+  // иконки и подписи как в DeepSeek Harness: ходов · шагов · ток/с · ток · кэш
+  var turns = mkItem("⏱", "", "ходов");
+  var steps = mkItem("⧉", "", "шагов");
+  var speed = mkItem("⚡", "", "ток/с");
+  var total = mkItem("▤", "", "ток");
+  var cache = mkItem("◔", "spin", "кэш");
 
   [turns, steps, speed, total, cache].forEach(function (it, i, arr) {
     strip.appendChild(it.wrap);

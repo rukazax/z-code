@@ -1,10 +1,10 @@
 # zcode-counters · Token counters
 
 📊 **Counters on the same line as the "Working" spinner:** to the right of it you get
-`⏱ 26 · ⧉ 558 · ⚡ 87 · ▤ 105.9M · ◔ 49.8%`, using the spinner's own font and size,
-with animated icons. Turns, steps and the total cover **the current session/task only**
-and refresh **live**: 350 ms while a turn is running, 1 s when idle. No session
-folder/name is shown.
+`⏱ 26 ходов · ⧉ 558 шагов · ⚡ 87 ток/с · ▤ 105.9M ток · ◔ 49.8% кэш`, using the
+spinner's own font and size, with labels and animated icons. Turns, steps and the total
+cover **the current session/task only** and refresh **live**: 350 ms while a turn is
+running, 1 s when idle. No session folder/name is shown.
 
 ![How it works](../assets/zcode-counters-en.svg)
 
