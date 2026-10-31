@@ -1,6 +1,7 @@
-/* zcode-counters v4 — счётчики в одну строку с индикатором «Working».
-   Справа от бегунка: иконки + значения + подписи как в DeepSeek Harness:
-   «ходов», «шагов», «ток/с», «ток», «кэш».
+/* zcode-counters v5 — счётчики в строке индикатора «Working», справа от него.
+   Надёжная схема: React часто перерисовывает индикатор и выкидывает чужие узлы,
+   поэтому полоса — fixed-элемент, который каждый тик встаёт по координатам
+   элемента «Working» (getBoundingClientRect). Шрифт копируется у него же.
    Данные: GET http://127.0.0.1:7717/usage/latest (350 мс в работе, 1 с в покое). */
 (function () {
   "use strict";
@@ -12,8 +13,9 @@
   style.textContent =
     "@keyframes zcc-pulse{0%,100%{opacity:.45}50%{opacity:1}}" +
     "@keyframes zcc-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}" +
-    "#" + ID + "{display:none;align-items:center;gap:8px;margin-left:10px;" +
-    "white-space:nowrap;vertical-align:middle;pointer-events:none;opacity:.85}" +
+    "#" + ID + "{position:fixed;display:none;align-items:center;gap:7px;" +
+    "white-space:nowrap;pointer-events:none;opacity:.9;z-index:2147483000;" +
+    "transform:translateY(-50%)}" +
     "#" + ID + " .zcc-item{display:inline-flex;align-items:center;gap:4px}" +
     "#" + ID + " .zcc-ico{display:inline-block;animation:zcc-pulse 1.8s ease-in-out infinite}" +
     "#" + ID + " .zcc-ico.spin{animation:zcc-spin 2.4s linear infinite}" +
@@ -24,7 +26,7 @@
 
   var strip = document.createElement("span");
   strip.id = ID;
-  strip.setAttribute("data-zcode-counters", "v4");
+  strip.setAttribute("data-zcode-counters", "v5");
 
   function mkItem(iconChar, cls, label) {
     var wrap = document.createElement("span");
@@ -47,39 +49,37 @@
     return { wrap: wrap, ico: ico, val: val, lbl: lbl, sep: sep };
   }
 
-  // иконки и подписи как в DeepSeek Harness: ходов · шагов · ток/с · ток · кэш
   var turns = mkItem("⏱", "", "ходов");
   var steps = mkItem("⧉", "", "шагов");
   var speed = mkItem("⚡", "", "ток/с");
   var total = mkItem("▤", "", "ток");
   var cache = mkItem("◔", "spin", "кэш");
-
   [turns, steps, speed, total, cache].forEach(function (it, i, arr) {
     strip.appendChild(it.wrap);
     if (i < arr.length - 1) strip.appendChild(it.sep);
   });
+  (document.body || document.documentElement).appendChild(strip);
 
-  var hostFound = null;
+  var anchorEl = null;
 
-  // листовой элемент, который прямо сейчас показывает «Working <время>»
+  // лист с текстом «Working»/«Работает»/«运行中»
   function findWorking() {
     var nodes = document.querySelectorAll("span,div,p,label,button");
     for (var i = nodes.length - 1; i >= 0; i--) {
       var el = nodes[i];
-      if (!el || el === strip || el.contains(strip) || strip.contains(el)) continue;
-      var t = (el.textContent || "").trim();
-      if (!t || t.length > 40) continue;
+      if (!el || el === strip || el.contains(strip)) continue;
+      var t = (el.textContent || "").replace(/\s+/g, " ").trim();
       if (!/^(Работает|Working|运行中)/.test(t)) continue;
       if (el.querySelector("span,div,p,label,button")) continue; // нужен листовой
-      // отсекаем меню/скрытые
       var r = el.getBoundingClientRect();
       if (!r.width || !r.height) continue;
+      if (r.bottom < window.innerHeight * 0.5) continue; // нижняя зона (над вводом)
       return el;
     }
     return null;
   }
 
-  function applyFont(el) {
+  function copyFont(el) {
     var cs = window.getComputedStyle(el);
     strip.style.fontFamily = cs.fontFamily;
     strip.style.fontSize = cs.fontSize;
@@ -87,24 +87,28 @@
     strip.style.lineHeight = cs.lineHeight;
     strip.style.letterSpacing = cs.letterSpacing;
     strip.style.color = cs.color;
-    strip.style.opacity = "0.85";
   }
 
-  function attach() {
-    if (hostFound && document.contains(hostFound) && hostFound.parentNode) return true;
-    var w = findWorking();
-    if (!w) { strip.style.display = "none"; hostFound = null; return false; }
-    hostFound = w;
-    applyFont(w);
-    w.parentNode.insertBefore(strip, w.nextSibling);
+  function place() {
+    if (!anchorEl || !document.contains(anchorEl)) {
+      anchorEl = findWorking();
+      if (!anchorEl) { strip.style.display = "none"; return false; }
+      copyFont(anchorEl);
+    }
+    var r = anchorEl.getBoundingClientRect();
+    if (!r.width || !r.height) { strip.style.display = "none"; return false; }
+
+    strip.style.left = Math.round(r.right + 12) + "px";
+    strip.style.top = Math.round(r.top + r.height / 2) + "px";
+    strip.style.display = "inline-flex";
     return true;
   }
 
-  var fmt = function (n) {
+  function fmt(n) {
     if (n >= 1000000) return (n / 1000000).toFixed(1) + " млн";
     if (n >= 1000) return Math.round(n / 1000) + " тыс";
     return String(n || 0);
-  };
+  }
 
   function render(u) {
     turns.val.textContent = u.turns + "";
@@ -115,34 +119,24 @@
   }
 
   function tick() {
-    var ok = attach();
-    if (!ok) return;
+    var mounted = place();
+    if (!mounted) { setTimeout(tick, 700); return; }
     fetch("http://127.0.0.1:7717/usage/latest", { cache: "no-store" })
-      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (j) {
-        if (!j || !j.ok || !j.usage || !j.usage.ok || j.usage.empty) {
-          strip.style.display = "none";
-          hostFound = null;
-          return;
-        }
-        render(j.usage);
-        if (j.usage.running) strip.classList.add("live");
-        else strip.classList.remove("live");
-        strip.style.display = "inline-flex";
+        var u = j && j.usage;
+        if (!u || !u.ok || u.empty) { strip.style.opacity = "0.35"; return; }
+        strip.style.opacity = "0.9";
+        if (u.running) strip.classList.add("live"); else strip.classList.remove("live");
+        render(u);
       })
-      .catch(function () {
-        strip.style.display = "none";
-        hostFound = null;
+      .catch(function () { strip.style.opacity = "0.35"; })
+      .then(function () {
+        setTimeout(tick, strip.classList.contains("live") ? 350 : 1000);
       });
   }
 
-  // React перерисовывает «Working» часто — просто поддерживаем вставку живой
-  var mo = new MutationObserver(function () { attach(); });
-  mo.observe(document.documentElement, { childList: true, subtree: true });
-
-  // почти непрерывно: пока идёт ход — 350 мс, в покое — 1 с
-  (function loop() {
-    tick();
-    setTimeout(loop, strip.classList.contains("live") ? 350 : 1000);
-  })();
+  window.addEventListener("resize", place);
+  window.addEventListener("scroll", place, true);
+  setTimeout(tick, 250);
 })();

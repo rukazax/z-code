@@ -18,7 +18,7 @@
     {
       "name": "routine-miner",
       "source": "./plugins/routine-miner",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "description": "Майнер повторяющихся действий: превращает частые задачи в скилы и глобальные правила и подставляет их автоматически.",
       "displayName": "Скилы из рутин",
       "displayName_i18n": {

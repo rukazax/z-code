@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-31 — routine-miner 1.1.1: триггерный мешок и содержательные слова
+
+RU: в скоринг добавлены две правки по итогам калибровки. Мешок рутины теперь собирается
+**только из триггеров** (фраза + частотные слова кластера) — раньше туда попадали все слова
+длинных образцов, и запросы вроде «покажи список файлов в текущей папке» цеплялись за
+github-рутину через «файлов/папке». Плюс бонус +0.03, когда есть якорь и минимум два
+содержательных слова (длина ≥ 5). Калибровка: реальные повторы 0.456–0.528, ложные ≤ 0.431,
+порог 0.45 разделяет чисто.
+
+EN: two scoring fixes after calibration. A routine's bag is now built **from triggers only**
+(phrase + frequent cluster words) — previously it absorbed every word of long samples, so
+prompts like “Покажи список файлов в текущей папке” matched the github routine via
+“файлов/папке”. Added a +0.03 bonus when there is an anchor and at least two content words
+(length ≥ 5). Calibration: real repeats 0.456–0.528, false matches ≤ 0.431; the 0.45 threshold
+separates cleanly.
+
 ## 2026-10-31 — routine-miner 1.1.0: точность срабатывания
 
 RU: порог поднят с 0.38 до **0.45**, а скоринг переделан: у каждого слова появился вес
