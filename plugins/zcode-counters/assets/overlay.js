@@ -1,246 +1,134 @@
-/* zcode-counters v9
-   Что делает:
-   • вместо спиннера-квадратика и слова «Working»/«Работает» рисует бегущие часики
-     (SVG-циферблат с вращающейся стрелкой), таймер остаётся на месте;
-   • справа в той же строке — счётчики: ходы · шаги · ток/с · Σ ток · кэш %, шрифт
-     копируется у индикатора;
-   • все иконки анимированы: часы — вращение стрелки, ходы — медленный оборот,
-     шаги — пульс, скорость — вспышки, сумма — «дыхание» масштаба, кэш — вращение.
-   Механика: TreeWalker по текстовым узлам + Range-координаты; полоса и «заплатка»
-   с часами — fixed-элементы, поэтому переживают перерисовки React.
-   Данные: GET http://127.0.0.1:7717/usage/latest (350 мс в работе, 1 с в покое).
-   Телеметрия: POST /probe. */
+﻿/* zcode-counters v17 — строка счётчиков ВНУТРИ поля ввода:
+   прижата к низу композера, растянута по его ширине, пять показателей равномерно.
+   Внутри бокса резервируем отступ снизу, чтобы не наезжать на текст.
+   Слово «Working» скрыто; анимация иконок — только пока меняются значения. */
 (function () {
   "use strict";
-
   var ID = "zcode-counters-strip";
-  var PATCH_ID = "zcode-counters-clock";
   if (document.getElementById(ID)) return;
 
-  // ---------- телеметрия ----------
-  function probe(stage, data) {
-    try {
-      fetch("http://127.0.0.1:7717/probe", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ stage: stage, w: window.innerWidth, h: window.innerHeight, data: data || null }),
-      }).catch(function () {});
-    } catch (e) { /* диагностика не должна мешать */ }
-  }
-  window.addEventListener("error", function (e) {
-    probe("error", { message: String(e.message || e.error || "unknown") });
-  });
-
-  // ---------- стили и анимации ----------
-  var style = document.createElement("style");
-  style.textContent =
+  var css = document.createElement("style");
+  css.textContent =
     "@keyframes zcc-pulse{0%,100%{opacity:.4}50%{opacity:1}}" +
     "@keyframes zcc-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}" +
-    "@keyframes zcc-flash{0%,100%{opacity:.35;filter:saturate(.6)}45%{opacity:1;filter:saturate(1.4)}}" +
-    "@keyframes zcc-breathe{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.22);opacity:1}}" +
-    "@keyframes zcc-hand{from{transform:rotate(0)}to{transform:rotate(360deg)}}" +
-    "#" + ID + "{position:fixed;display:none;align-items:center;gap:7px;white-space:nowrap;" +
-    "pointer-events:none;opacity:.9;z-index:2147483000;transform:translateY(-50%)}" +
-    "#" + ID + " .zcc-item{display:inline-flex;align-items:center;gap:4px}" +
-    "#" + ID + " .zcc-ico{display:inline-block;transform-origin:50% 50%;will-change:transform,opacity}" +
+    "@keyframes zcc-flash{0%,100%{opacity:.35}45%{opacity:1}}" +
+    "@keyframes zcc-breathe{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.2);opacity:1}}" +
+    "#" + ID + "{position:absolute;left:0;right:0;bottom:2px;display:none;" +
+    "grid-template-columns:repeat(5,1fr);align-items:center;box-sizing:border-box;" +
+    "padding:3px 14px 2px;pointer-events:none;z-index:5;" +
+    "border-top:1px solid rgba(255,255,255,.055);" +
+    "font:11px/1.25 -apple-system,Segoe UI,sans-serif;color:#8b949e;" +
+    "font-variant-numeric:tabular-nums;letter-spacing:.15px}" +
+    "#" + ID + " .i{display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}" +
+    "#" + ID + " .v{color:#c9d1d9;font-weight:600}" +
+    "#" + ID + " .l{color:#8b949e;opacity:.62}" +
+    "#" + ID + " svg{width:1em;height:1em;flex:none;opacity:.75}" +
     "#" + ID + " .a-spin{animation:zcc-spin 3.2s linear infinite}" +
     "#" + ID + " .a-pulse{animation:zcc-pulse 1.8s ease-in-out infinite}" +
     "#" + ID + " .a-flash{animation:zcc-flash 1.4s ease-in-out infinite}" +
     "#" + ID + " .a-breathe{animation:zcc-breathe 2.2s ease-in-out infinite}" +
-    "#" + ID + ".live .zcc-ico{animation-duration:.8s}" +
-    "#" + ID + " .zcc-sep{opacity:.35}" +
-    "#" + PATCH_ID + "{position:fixed;display:none;z-index:2147482999;pointer-events:none;" +
-    "border-radius:4px;transform:translateY(-50%);overflow:hidden}" +
-    "#" + PATCH_ID + " .zcc-hand{transform-origin:12px 12px;animation:zcc-hand 2s linear infinite}";
-  (document.head || document.documentElement).appendChild(style);
+    "#" + ID + " .anim{animation-play-state:paused}" +
+    "#" + ID + ".live .anim{animation-play-state:running;animation-duration:.9s}";
+  (document.head || document.documentElement).appendChild(css);
 
-  var host = document.body || document.documentElement;
+  var SVG = {
+    turns: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/></svg>',
+    steps: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/><path d="M10 7h4v10"/></svg>',
+    speed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>',
+    total: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>',
+    cache: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>',
+  };
 
-  // ---------- «заплатка» с бегущими часами ----------
-  var patch = document.createElement("span");
-  patch.id = PATCH_ID;
-  patch.innerHTML =
-    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-    'stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"></circle>' +
-    '<line class="zcc-hand" x1="12" y1="12" x2="12" y2="6.5"></line></svg>';
-  host.appendChild(patch);
-
-  // ---------- полоса счётчиков ----------
-  var strip = document.createElement("span");
+  var strip = document.createElement("div");
   strip.id = ID;
-  strip.setAttribute("data-zcode-counters", "v9");
-
-  function mkItem(icon, animClass, label) {
-    var wrap = document.createElement("span");
-    wrap.className = "zcc-item";
-    var ico = document.createElement("span");
-    ico.className = "zcc-ico " + animClass;
-    ico.textContent = icon;
-    var val = document.createElement("span");
-    val.className = "zcc-val";
-    val.textContent = "—";
-    var lbl = document.createElement("span");
-    lbl.className = "zcc-lbl";
-    lbl.textContent = label;
-    var sep = document.createElement("span");
-    sep.className = "zcc-sep";
-    sep.textContent = "·";
-    wrap.appendChild(ico);
-    wrap.appendChild(val);
-    wrap.appendChild(lbl);
-    return { wrap: wrap, ico: ico, val: val, lbl: lbl, sep: sep };
+  var vals = [];
+  function add(icon, anim, label) {
+    var el = document.createElement("span");
+    el.className = "i";
+    el.innerHTML = '<span class="anim ' + anim + '">' + icon + "</span>" +
+      '<span class="v">—</span><span class="l">' + label + "</span>";
+    strip.appendChild(el);
+    vals.push(el.querySelector(".v"));
   }
+  add(SVG.turns, "a-spin", "ходов");
+  add(SVG.steps, "a-pulse", "шагов");
+  add(SVG.speed, "a-flash", "ток/с");
+  add(SVG.total, "a-breathe", "ток");
+  add(SVG.cache, "a-spin", "кэш");
+  (document.body || document.documentElement).appendChild(strip);
 
-  var items = [
-    mkItem("⏱", "a-spin", "ходов"),
-    mkItem("⧉", "a-pulse", "шагов"),
-    mkItem("⚡", "a-flash", "ток/с"),
-    mkItem("▤", "a-breathe", "ток"),
-    mkItem("◔", "a-spin", "кэш"),
-  ];
-  items.forEach(function (it, i) {
-    strip.appendChild(it.wrap);
-    if (i < items.length - 1) strip.appendChild(it.sep);
-  });
-  host.appendChild(strip);
-  probe("loaded", { body: Boolean(document.body) });
-
-  // ---------- поиск индикатора ----------
-  var RE_WORKING = /^(Работает|Working|运行中)/;
-  var RE_TIMER = /^\d+(?:[.,]\d+)?\s*[cсmsм]$/;
-
-  function translucent(c) {
-    return !c || c === "transparent" || /rgba?\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\)/.test(c);
-  }
-  function bgOf(el) {
+  // контейнер композера: рамка + шире самого textarea
+  function hostOf(el) {
+    var r = el.getBoundingClientRect();
     var cur = el;
-    while (cur && cur !== document.documentElement) {
-      var bg = window.getComputedStyle(cur).backgroundColor;
-      if (!translucent(bg)) return bg;
+    for (var i = 0; i < 5 && cur && cur.parentElement; i++) {
       cur = cur.parentElement;
+      var cs = window.getComputedStyle(cur);
+      var br = cur.getBoundingClientRect();
+      if (br.width > r.width * 1.02 && (cs.borderRadius !== "0px" || cs.borderTopWidth !== "0px")) return cur;
     }
-    return "rgb(13,17,23)";
+    return el.parentElement;
   }
 
-  function findTargets() {
-    if (!document.body) return null;
-    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
-    var word = null;
-    var timer = null;
-    var node;
-    while ((node = walker.nextNode())) {
-      var t = (node.nodeValue || "").replace(/\s+/g, " ").trim();
-      if (!t) continue;
-      var el = node.parentElement;
-      if (!el) continue;
-      var rng = document.createRange();
-      try { rng.selectNodeContents(node); } catch (e) { continue; }
-      var r = rng.getBoundingClientRect();
-      if (!r.width || !r.height) continue;
-      if (r.bottom < window.innerHeight * 0.45) continue;
+  function reserve(host) {
+    if (host.dataset.zccReserved) return;
+    var pb = parseFloat(window.getComputedStyle(host).paddingBottom) || 0;
+    host.style.paddingBottom = (pb + 22) + "px";
+    host.dataset.zccReserved = "1";
+    if (window.getComputedStyle(host).position === "static") host.style.position = "relative";
+  }
 
-      if (RE_WORKING.test(t) && (!word || r.bottom > word.rect.bottom)) {
-        word = { node: node, rect: r, fontEl: el };
-      } else if (RE_TIMER.test(t) && (!timer || r.right > timer.rect.right)) {
-        timer = { node: node, rect: r, fontEl: el };
+  function hideWorking() {
+    try {
+      var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+      var n;
+      while ((n = w.nextNode())) {
+        if (/^(Работает|Working|运行中)$/.test((n.nodeValue || "").trim()) && n.parentElement) {
+          n.parentElement.style.visibility = "hidden";
+        }
       }
-    }
-    if (!word && !timer) return null;
-    return { word: word, timer: timer };
+    } catch (e) { /* не критично */ }
   }
-
-  function copyFont(target, el) {
-    var cs = window.getComputedStyle(el);
-    target.style.fontFamily = cs.fontFamily;
-    target.style.fontSize = cs.fontSize;
-    target.style.fontWeight = cs.fontWeight;
-    target.style.lineHeight = cs.lineHeight;
-    target.style.letterSpacing = cs.letterSpacing;
-    target.style.color = cs.color;
-  }
-
-  var mountedOnce = false;
-  var noAnchorReported = false;
 
   function place() {
-    var t = findTargets();
-    if (!t) {
-      strip.style.display = "none";
-      patch.style.display = "none";
-      if (!noAnchorReported) { noAnchorReported = true; probe("no-anchor"); }
-      return false;
-    }
-
-    var anchor = (t.timer && (!t.word || t.timer.rect.right >= t.word.rect.right)) ? t.timer : t.word;
-
-    if (t.word) {
-      var w = t.word.rect;
-      var left = Math.max(0, w.left - 26); // накрываем и квадратик-спиннер слева
-      patch.style.background = bgOf(t.word.fontEl);
-      patch.style.left = Math.round(left) + "px";
-      patch.style.top = Math.round(w.top + w.height / 2) + "px";
-      patch.style.width = Math.round(w.right - left + 4) + "px";
-      patch.style.height = Math.round(Math.max(18, w.height + 4)) + "px";
-      patch.style.display = "flex";
-      patch.style.alignItems = "center";
-      patch.style.justifyContent = "flex-start";
-      patch.style.paddingLeft = "3px";
-      patch.style.boxSizing = "border-box";
-      copyFont(patch, t.word.fontEl);
-    } else {
-      patch.style.display = "none";
-    }
-
-    copyFont(strip, anchor.fontEl);
-    strip.style.left = Math.round(anchor.rect.right + 12) + "px";
-    strip.style.top = Math.round(anchor.rect.top + anchor.rect.height / 2) + "px";
-    strip.style.display = "inline-flex";
-
-    if (!mountedOnce) {
-      mountedOnce = true;
-      probe("anchor", {
-        right: Math.round(anchor.rect.right),
-        top: Math.round(anchor.rect.top),
-        hasWord: Boolean(t.word),
-        hasTimer: Boolean(t.timer),
-      });
-    }
-    noAnchorReported = false;
+    var el = document.querySelector('textarea, [contenteditable="true"]');
+    if (!el) { strip.style.display = "none"; return false; }
+    var host = hostOf(el);
+    if (!host) { strip.style.display = "none"; return false; }
+    reserve(host);
+    if (strip.parentElement !== host) host.appendChild(strip);
+    strip.style.display = "grid";
     return true;
   }
 
-  // ---------- данные ----------
   function fmt(n) {
-    if (n >= 1000000) return (n / 1000000).toFixed(1) + " млн";
+    if (n >= 1e6) return (n / 1e6).toFixed(1) + " млн";
     if (n >= 1000) return Math.round(n / 1000) + " тыс";
     return String(n || 0);
   }
 
-  function render(u) {
-    items[0].val.textContent = u.turns + "";
-    items[1].val.textContent = u.steps + "";
-    items[2].val.textContent = (u.tokensPerSecond || 0) + "";
-    items[3].val.textContent = fmt(u.tokens && u.tokens.total);
-    items[4].val.textContent = u.cacheHitPct == null ? "н/д" : u.cacheHitPct.toFixed(1) + "%";
-  }
-
+  var lastKey = "";
   function tick() {
-    var ok = place();
-    if (!ok) { setTimeout(tick, 500); return; }
+    place();
     fetch("http://127.0.0.1:7717/usage/latest", { cache: "no-store" })
-      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (j) {
         var u = j && j.usage;
-        if (!u || !u.ok || u.empty) { strip.style.opacity = "0.35"; return; }
-        strip.style.opacity = "0.9";
-        if (u.running) strip.classList.add("live"); else strip.classList.remove("live");
-        render(u);
+        if (!u || !u.ok || u.empty) { strip.classList.remove("live"); return; }
+        var key = [u.turns, u.steps, u.tokensPerSecond, u.tokens && u.tokens.total, u.cacheHitPct].join("|");
+        if (key !== lastKey) { lastKey = key; strip.classList.add("live"); }
+        else { strip.classList.remove("live"); }
+        vals[0].textContent = u.turns;
+        vals[1].textContent = u.steps;
+        vals[2].textContent = u.tokensPerSecond || 0;
+        vals[3].textContent = fmt(u.tokens && u.tokens.total);
+        vals[4].textContent = u.cacheHitPct == null ? "н/д" : u.cacheHitPct.toFixed(1) + "%";
       })
-      .catch(function () { strip.style.opacity = "0.35"; })
-      .then(function () { setTimeout(tick, strip.classList.contains("live") ? 350 : 900); });
+      .catch(function () { strip.classList.remove("live"); })
+      .then(function () { setTimeout(tick, 400); });
   }
 
-  window.addEventListener("resize", place);
-  window.addEventListener("scroll", place, true);
-  setTimeout(tick, 250);
+  setTimeout(tick, 400);
 })();
+
+

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-31 — zcode-counters 1.6.0: строка счётчиков внутри поля ввода
+
+RU: счётчики переехали **внутрь композера**, к нижнему краю: пять равных колонок по ширине поля, значения ярче подписей, моноширинные цифры, тонкий разделитель сверху. Иконки — inline-SVG размером 1em (эмодзи в сборке не рисовались), анимация включается только когда цифры меняются, в простое стоит. Штатный индикатор «Working» со спиннером и таймером не трогается. Убраны все эвристики поиска «Working» по тексту — привязка идёт к контейнеру поля ввода, поэтому счётчики больше не уезжают в переписку или боковую панель.
+
+EN: the counters moved **inside the composer**, pinned to its bottom edge: five equal columns across the field width, values brighter than labels, tabular figures, a hairline separator on top. Icons are inline SVG at 1em (emoji did not render in this build); animation runs only while the numbers change and freezes when idle. The stock “Working” indicator with its spinner and timer is left untouched. All text-based “Working” heuristics are gone — the strip binds to the input container, so it no longer drifts into the transcript or the sidebar.
+
 ## 2026-10-31 — routine-miner 1.1.1: триггерный мешок и содержательные слова
 
 RU: в скоринг добавлены две правки по итогам калибровки. Мешок рутины теперь собирается
