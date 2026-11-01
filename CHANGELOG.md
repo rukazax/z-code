@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-11-02 — zcode-counters 1.8.0: автопроверка балансов и проценты моделей
+
+RU: демон получил **поллер балансов** по реестру `ctxdb/data/providers.json` (kind: web, url, профиль браузера, regex на каждое поле). Правила проверки: **только при активности модели** (есть ход или обращение в последние 15 минут), интервал **рандомный 40–80 минут**. Написан на spawn + жёсткий kill (45 с), разбор частичного DOM: это чинит вечное зависание SPA-страниц. Профиль логина живёт в `ctxdb/data/browser/<id>` и в git/переносимый снапшот не попадает.
+
+Проценты провайдеров отображаются как **остаток** (`100 − использовано`) и привязаны к **провайдеру активной модели** (по `provider_id` из model_usage): у DeepSeek квоты нет — прочерк, Kimi — остаток до сброса, opencode — остаток месячного лимита. Подписка opencode даёт модели glm/kimi — они тарифицируются через неё.
+
+Блок «из:» (расход сессии в $ по прайсу) убран по решению владельца — оценочная арифметика давала неверные деньги; в `pricing.json` осталась механика, но не выводится.
+
+EN: the daemon got a **balance poller** driven by `ctxdb/data/providers.json` (kind: web, url, browser profile, per-field regex). Checks run **only while the model is active** (a turn in the last 15 minutes), interval **randomized 40–80 minutes**. Built on spawn + hard kill (45 s) and partial-DOM parsing: this fixes the endless SPA hang. The login profile lives in `ctxdb/data/browser/<id>` and is excluded from git and the portable snapshot.
+
+Provider percentages display as **remaining** (`100 − used`) and are bound to the **active model provider** (via `provider_id` from model_usage): DeepSeek has no quota — dash; Kimi — remaining until reset; opencode — remaining monthly quota. glm/kimi models run under the opencode plan, so they are billed through it.
+
+The per-session dollar block (“из:”) was removed by the owner’s decision — the token-pricing arithmetic produced wrong money; the `pricing.json` mechanics remain but are not displayed.
+
 ## 2026-10-31 — zcode-counters 1.7.0: автопроверка балансов по расписанию
 
 RU: демон научился сам обновлять балансы: реестр `ctxdb/data/providers.json` (kind: web, url, профиль браузера, regex для каждого поля), проверка headless-Edge, результат в `balance.json`. Правила: **только при активности модели** (есть ход или обращение в последние 15 минут), интервал **рандомный 40–80 минут**, чтобы не выглядело ботом. Проценты показываются как остаток (100 − использовано), привязаны к провайдеру активной модели; если у модели нет квоты — прочерк.
