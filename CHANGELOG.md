@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-31 — zcode-counters 1.7.0: автопроверка балансов по расписанию
+
+RU: демон научился сам обновлять балансы: реестр `ctxdb/data/providers.json` (kind: web, url, профиль браузера, regex для каждого поля), проверка headless-Edge, результат в `balance.json`. Правила: **только при активности модели** (есть ход или обращение в последние 15 минут), интервал **рандомный 40–80 минут**, чтобы не выглядело ботом. Проценты показываются как остаток (100 − использовано), привязаны к провайдеру активной модели; если у модели нет квоты — прочерк.
+
+EN: the daemon now refreshes balances on its own: a registry `ctxdb/data/providers.json` (kind: web, url, browser profile, per-field regex), checks via headless Edge into `balance.json`. Rules: **only while the model is active** (a run in the last 15 minutes), interval **randomized 40–80 minutes**. Percentages display as remaining (100 − used), bound to the active model provider; no quota — dash.
+
 ## 2026-10-31 — zcode-counters 1.6.0: строка счётчиков внутри поля ввода
 
 RU: счётчики переехали **внутрь композера**, к нижнему краю: пять равных колонок по ширине поля, значения ярче подписей, моноширинные цифры, тонкий разделитель сверху. Иконки — inline-SVG размером 1em (эмодзи в сборке не рисовались), анимация включается только когда цифры меняются, в простое стоит. Штатный индикатор «Working» со спиннером и таймером не трогается. Убраны все эвристики поиска «Working» по тексту — привязка идёт к контейнеру поля ввода, поэтому счётчики больше не уезжают в переписку или боковую панель.

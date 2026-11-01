@@ -46,7 +46,7 @@
     {
       "name": "zcode-counters",
       "source": "./plugins/zcode-counters",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "description": "Счётчики внутри поля ввода: ходы, шаги, ток/с, суммарные токены и попадание в кэш — ровной строкой по ширине поля, SVG-иконки с анимацией по факту расхода.",
       "displayName": "Счётчики токенов",
       "displayName_i18n": {

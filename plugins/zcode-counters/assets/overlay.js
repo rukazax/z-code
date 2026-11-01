@@ -14,7 +14,7 @@
     "@keyframes zcc-flash{0%,100%{opacity:.35}45%{opacity:1}}" +
     "@keyframes zcc-breathe{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.2);opacity:1}}" +
     "#" + ID + "{position:absolute;left:0;right:0;bottom:2px;display:none;" +
-    "grid-template-columns:repeat(5,1fr);align-items:center;box-sizing:border-box;" +
+    "grid-template-columns:repeat(7,1fr);align-items:center;box-sizing:border-box;" +
     "padding:3px 14px 2px;pointer-events:none;z-index:5;" +
     "border-top:1px solid rgba(255,255,255,.055);" +
     "font:11px/1.25 -apple-system,Segoe UI,sans-serif;color:#8b949e;" +
@@ -36,6 +36,7 @@
     steps: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/><path d="M10 7h4v10"/></svg>',
     speed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>',
     total: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>',
+    wallet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 15h2"/></svg>',
     cache: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>',
   };
 
@@ -55,6 +56,8 @@
   add(SVG.speed, "a-flash", "ток/с");
   add(SVG.total, "a-breathe", "ток");
   add(SVG.cache, "a-spin", "кэш");
+  add(SVG.wallet, "a-spin", "баланс");
+  add(SVG.cache, "a-spin", "модель");
   (document.body || document.documentElement).appendChild(strip);
 
   // контейнер композера: рамка + шире самого textarea
@@ -123,7 +126,9 @@
         vals[2].textContent = u.tokensPerSecond || 0;
         vals[3].textContent = fmt(u.tokens && u.tokens.total);
         vals[4].textContent = u.cacheHitPct == null ? "н/д" : u.cacheHitPct.toFixed(1) + "%";
-      })
+                                        vals[5].textContent = u.balance && u.balance.amount != null ? "$" + Number(u.balance.amount).toFixed(2) : "—";
+        vals[6].textContent = u.modelPct == null ? "—" : u.modelPct + "%";
+              })
       .catch(function () { strip.classList.remove("live"); })
       .then(function () { setTimeout(tick, 400); });
   }
