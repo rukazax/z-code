@@ -46,7 +46,7 @@
     {
       "name": "zcode-counters",
       "source": "./plugins/zcode-counters",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "description": "Счётчики внутри поля ввода (ходы/шаги/ток-с/Σ/кэш/баланс/процент) и фоновый поллер балансов всех провайдеров из providers.json.",
       "displayName": "Счётчики токенов",
       "displayName_i18n": {

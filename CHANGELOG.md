@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-02 — zcode-counters 1.9.0: баланс и остаток строго по активной модели, фикс поллера
+
+RU: правый блок «баланс» показывает **только баланс провайдера активной модели** (по `provider_id` из `model_usage`; glm/kimi под подпиской opencode тарифицируются через неё). Процент-блок — **остаток** (`100 − использовано`) того же провайдера; у модели без квоты — прочерк. Блок «из:» (расход в $ по прайсу) удалён из строки: расчёт по прайсу давал неверные деньги. Починен поллер: проверка активности модели падала (`require` в ESM), из-за чего баланс неделями не обновлялся; теперь динамический импорт, активность считается корректно, проверка идёт только при свежей работе модели, интервал 40–80 мин рандом.
+
+EN: the balance block now shows **only the active model provider’s balance** (via `provider_id` from `model_usage`; glm/kimi under the opencode plan bill through it). The percent block shows **remaining** (`100 − used`) for the same provider; no quota — dash. The session-cost block (“из:”) was removed from the strip: token-pricing arithmetic produced wrong money. Poller fixed: the model-activity check crashed (`require` in ESM), so balances never refreshed; now a dynamic import, correct activity detection, checks only on recent model activity, 40–80 min randomized interval.
+
 ## 2026-11-02 — zcode-counters 1.8.0: автопроверка балансов и проценты моделей
 
 RU: демон получил **поллер балансов** по реестру `ctxdb/data/providers.json` (kind: web, url, профиль браузера, regex на каждое поле). Правила проверки: **только при активности модели** (есть ход или обращение в последние 15 минут), интервал **рандомный 40–80 минут**. Написан на spawn + жёсткий kill (45 с), разбор частичного DOM: это чинит вечное зависание SPA-страниц. Профиль логина живёт в `ctxdb/data/browser/<id>` и в git/переносимый снапшот не попадает.
