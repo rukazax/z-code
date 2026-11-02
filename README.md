@@ -31,7 +31,7 @@
 | [`zcode-ru`](plugins/zcode-ru) | полный русский интерфейс ZCode, 6999 строк, установка / проверка / откат | `/rusifikator` | [docs/ru/zcode-ru.md](docs/ru/zcode-ru.md) |
 | [`routine-miner`](plugins/routine-miner) | находит повторяющиеся действия и пакует их в скилы; подставляет скилл под типовой запрос автоматически | `/routine-miner` | [docs/ru/routine-miner.md](docs/ru/routine-miner.md) |
 | [`ctxdb-setup`](plugins/ctxdb-setup) | локальная векторная память (LanceDB + e5): индекс всех чатов, задач и памяти по всем проектам, автоподстановка контекста, перенос установки одной папкой | `/ctxdb` | [docs/ru/ctxdb-setup.md](docs/ru/ctxdb-setup.md) |
-| [`zcode-counters`](plugins/zcode-counters) | полоса счётчиков токенов над полем ввода: ходы · шаги · ток/с · Σ · попадание в кэш | `/zcode-counters` | [docs/ru/zcode-counters.md](docs/ru/zcode-counters.md) |
+| [`zcode-counters`](plugins/zcode-counters) | полоса счётчиков внутри поля ввода: ходы · шаги · ток/с · Σ · кэш · баланс · лимиты | `/zcode-counters` | [docs/ru/zcode-counters.md](docs/ru/zcode-counters.md) |
 
 **zcode-ru** переводит каталог строк, нативное меню, диалоги обновления и шаблоны
 автоматизаций. Перевод не поставляется готовым архивом: `patch.js` пересобирает его
@@ -159,7 +159,7 @@ also works as a marketplace — `marketplace.json` lives at the root.
 | [`zcode-ru`](plugins/zcode-ru) | a complete Russian UI for ZCode, 6999 strings, install / check / rollback | `/rusifikator` | [docs/en/zcode-ru.md](docs/en/zcode-ru.md) |
 | [`routine-miner`](plugins/routine-miner) | finds repeated actions and packs them into skills; injects the skill for a typical request automatically | `/routine-miner` | [docs/en/routine-miner.md](docs/en/routine-miner.md) |
 | [`ctxdb-setup`](plugins/ctxdb-setup) | local vector memory (LanceDB + e5): every chat, task and memory indexed across projects, automatic context injection, one-folder migration | `/ctxdb` | [docs/en/ctxdb-setup.md](docs/en/ctxdb-setup.md) |
-| [`zcode-counters`](plugins/zcode-counters) | a token-counter strip above the input field: turns · steps · tok/s · Σ · cache hit | `/zcode-counters` | [docs/en/zcode-counters.md](docs/en/zcode-counters.md) |
+| [`zcode-counters`](plugins/zcode-counters) | a token-counter strip inside the input field: turns · steps · tok/s · Σ · cache · balance · limits | `/zcode-counters` | [docs/en/zcode-counters.md](docs/en/zcode-counters.md) |
 
 **zcode-ru** translates the string catalog, the native menu, update dialogs and
 automation templates. It does not ship a ready-made archive: `patch.js` rebuilds the
