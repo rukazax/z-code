@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-02 — tools: автовосстановление интерфейса после обновлений ZCode
+
+RU: в `tools/` появился комплект, который сам возвращает русификатор и счётчики после обновления ZCode. `install-zcode-ui-task.ps1` регистрирует задачу Windows `ZCodeUiRestore` (при входе + каждые 15 минут, Highest, без UAC); `restore-zcode-ui.ps1` собирает объединённый `app.asar` (русификатор → счётчики), сверяет SHA-256 всех файлов с заголовком и ставит его. Демон ctxdb следит за `mtime` архива и запускает задачу сразу после обновления. Если патчи на месте — выход за ~0,3 с, ничего не трогается. Патчи применяются к следующему запуску ZCode (текущее окно держит старый `index.html`). Лог: `%LOCALAPPDATA%\ZCodeUiRestore\zcode-ui-restore.log`.
+
+EN: `tools/` now contains a self-healing kit that restores the Russian UI and the counters after a ZCode update. `install-zcode-ui-task.ps1` registers the `ZCodeUiRestore` Windows task (at logon + every 15 minutes, Highest, no UAC); `restore-zcode-ui.ps1` rebuilds the combined `app.asar` (localization → counters), verifies every file’s SHA-256 against the header and installs it. The ctxdb daemon watches the archive’s `mtime` and triggers the task right after an update. When the patches are present it exits in ~0.3 s and touches nothing. Patches apply on the next ZCode launch (the current window keeps the old `index.html`). Log: `%LOCALAPPDATA%\ZCodeUiRestore\zcode-ui-restore.log`.
+
 ## 2026-11-02 — zcode-counters 1.9.1: подпись «лимиты» и провайдер по выбранной модели
 
 RU: правый блок подписан **«лимиты»** вместо «модель». Главное — провайдер для баланса и процента теперь берётся из **`modelSelection` последнего запроса**, а не из последней строки `model_usage`. Раньше после переключения модели (до первой генерации) строка продолжала показывать баланс прошлого провайдера — например, `$17.64` DeepSeek на GLM. Теперь переключил модель — баланс и остаток сразу от её провайдера. Демон больше не перетирает модель строкой `model_usage`: она осталась только фолбэком, когда выбора модели в сообщении нет. Проверено на живой базе: сессия с `kimi-k3.1-pro` через opencode отдаёт `$0.00` и `89%`, сессия на `deepseek-flash` — `$17.64` и прочерк (у DeepSeek нет месячной квоты).

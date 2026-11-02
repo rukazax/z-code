@@ -39,6 +39,23 @@
 её нужно просто повторить. Ключи остаются английскими, меняются только значения.
 Подробности — на странице пакета.
 
+## Инструменты
+
+Не плагины, а обслуживание установки:
+
+| Инструмент | Что делает |
+|---|---|
+| [`tools/install-zcode-ui-task.ps1`](tools/install-zcode-ui-task.ps1) | регистрирует задачу Windows: после каждого обновления ZCode сама возвращает русификатор и счётчики, без UAC |
+| [`tools/restore-zcode-ui.ps1`](tools/restore-zcode-ui.ps1) | сборка и установка объединённого архива вручную: `-BuildOnly`, `-Force`, `-Auto` |
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\install-zcode-ui-task.ps1
+```
+
+Задача `ZCodeUiRestore` срабатывает при входе и каждые 15 минут; демон ctxdb
+дополнительно следит за `app.asar` и запускает её сразу после обновления.
+Патчи применяются к следующему запуску ZCode. Подробности — [`tools/README.md`](tools/README.md).
+
 ## Экосистема
 
 ```mermaid
@@ -148,6 +165,23 @@ also works as a marketplace — `marketplace.json` lives at the root.
 automation templates. It does not ship a ready-made archive: `patch.js` rebuilds the
 translation from the installed ZCode version, so an app update does not break the
 setup — it just has to be applied again. Keys stay English; only values change.
+
+### Tools
+
+Not plugins — installation maintenance:
+
+| Tool | Purpose |
+|---|---|
+| [`tools/install-zcode-ui-task.ps1`](tools/install-zcode-ui-task.ps1) | registers a Windows task that restores the Russian UI and counters after every ZCode update, without UAC |
+| [`tools/restore-zcode-ui.ps1`](tools/restore-zcode-ui.ps1) | manual build & install of the combined archive: `-BuildOnly`, `-Force`, `-Auto` |
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\install-zcode-ui-task.ps1
+```
+
+The `ZCodeUiRestore` task runs at logon and every 15 minutes; the ctxdb daemon also
+watches `app.asar` and triggers it right after an update. Patches apply on the next
+ZCode launch. Details — [`tools/README.md`](tools/README.md).
 
 ### Ecosystem
 
