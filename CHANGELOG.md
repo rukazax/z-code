@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-02 — zcode-counters 1.9.1: подпись «лимиты» и провайдер по выбранной модели
+
+RU: правый блок подписан **«лимиты»** вместо «модель». Главное — провайдер для баланса и процента теперь берётся из **`modelSelection` последнего запроса**, а не из последней строки `model_usage`. Раньше после переключения модели (до первой генерации) строка продолжала показывать баланс прошлого провайдера — например, `$17.64` DeepSeek на GLM. Теперь переключил модель — баланс и остаток сразу от её провайдера. Демон больше не перетирает модель строкой `model_usage`: она осталась только фолбэком, когда выбора модели в сообщении нет. Проверено на живой базе: сессия с `kimi-k3.1-pro` через opencode отдаёт `$0.00` и `89%`, сессия на `deepseek-flash` — `$17.64` и прочерк (у DeepSeek нет месячной квоты).
+
+EN: the rightmost block is now labelled **“limits”** instead of “model”. More importantly, the provider for balance and percent comes from the **last request’s `modelSelection`**, not the last `model_usage` row. Previously, after switching models (before the first generation) the strip kept showing the previous provider’s balance — e.g. DeepSeek’s `$17.64` while GLM was selected. Now the balance and remaining quota follow the selected model immediately. The daemon no longer overwrites the model with the `model_usage` row; that row is only a fallback when the message carries no selection. Verified against the live database: a `kimi-k3.1-pro` session via opencode returns `$0.00` and `89%`, a `deepseek-flash` session returns `$17.64` and a dash (DeepSeek has no monthly quota).
+
 ## 2026-11-02 — zcode-counters 1.9.0: баланс и остаток строго по активной модели, фикс поллера
 
 RU: правый блок «баланс» показывает **только баланс провайдера активной модели** (по `provider_id` из `model_usage`; glm/kimi под подпиской opencode тарифицируются через неё). Процент-блок — **остаток** (`100 − использовано`) того же провайдера; у модели без квоты — прочерк. Блок «из:» (расход в $ по прайсу) удалён из строки: расчёт по прайсу давал неверные деньги. Починен поллер: проверка активности модели падала (`require` в ESM), из-за чего баланс неделями не обновлялся; теперь динамический импорт, активность считается корректно, проверка идёт только при свежей работе модели, интервал 40–80 мин рандом.

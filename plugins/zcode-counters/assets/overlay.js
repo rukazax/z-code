@@ -57,7 +57,7 @@
   add(SVG.total, "a-breathe", "ток");
   add(SVG.cache, "a-spin", "кэш");
   add(SVG.wallet, "a-spin", "баланс");
-  add(SVG.cache, "a-spin", "модель");
+  add(SVG.cache, "a-spin", "лимиты");
   (document.body || document.documentElement).appendChild(strip);
 
   // контейнер композера: рамка + шире самого textarea

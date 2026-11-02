@@ -1,10 +1,10 @@
 # zcode-counters · Token counters
 
-📊 **Counters on the same line as the "Working" spinner:** to the right of it you get
-`⏱ 26 ходов · ⧉ 558 шагов · ⚡ 87 ток/с · ▤ 105.9M ток · ◔ 49.8% кэш`, using the
-spinner's own font and size, with labels and animated icons. Turns, steps and the total
-follow **the current session/task**; speed and cache are **summed across all sessions**.
-Refreshed live: 350 ms while a turn is running, 1 s when idle.
+📊 **Counters inside the input field:** along the composer’s bottom edge —
+`⏱ 128 turns · ⧉ 1024 steps · ⚡ 34 tok/s · ▤ 436.7M tok · ◔ 49.6% cache · 💳 $17.64 balance · ⟳ 89% limits`.
+Values are brighter than labels, figures are tabular, and icons animate only while the
+numbers change. Turns, steps and the total follow **the current session/task**; speed and
+cache are **summed across all sessions**. Refreshed live every 400 ms.
 No session folder/name is shown.
 
 ![How it works](../assets/zcode-counters-en.svg)
@@ -21,16 +21,20 @@ This plugin puts those numbers where you look while working.
 flowchart LR
     D[(usage tables<br/>turn_usage · tool_usage)] --> C[ctxdb daemon<br/>/usage/latest]
     C --> S[DOM overlay<br/>in index.html]
-    S --> U[strip above input]
+    S --> U[strip inside the input]
     U -. no daemon .-> X[hidden]
 ```
 
 - the patch is small: a `<script>` inserted into `out/renderer/index.html` inside `app.asar`;
-- the overlay finds the leaf element with "Working"/«Работает» text and inserts itself **right after it**,
-  copying the computed font, size and colour — so the line looks native;
-- icons are animated: opacity pulse on all of them, rotation on the cache one (`◔`);
-- React re-renders "Working" constantly — a `MutationObserver` keeps the insertion alive;
-- no React surgery; no daemon → the line stays hidden;
+- the overlay finds the input (`textarea` / `contenteditable`), walks up to the composer
+  frame, reserves 22 px at the bottom and pins the strip to its bottom edge — so it never
+  drifts into the transcript and survives React re-renders;
+- icons are inline SVG at 1em; animation runs only while the values change and freezes when idle;
+- the stock “Working” indicator and its timer are left untouched — the strip lives below,
+  inside the composer;
+- balance and “limits” follow the **selected model**: the provider comes from the last
+  request’s `modelSelection`, not from the last generation;
+- no React surgery; no daemon → the strip stays hidden;
 - co-exists with the russifier: their patches do not intersect;
 - SHA-256 of changed files recalculated so Electron accepts the archive;
 - the original is kept in `%LOCALAPPDATA%\ZCodeCounters\app.asar.backup`.
@@ -44,7 +48,9 @@ flowchart LR
 | Σ tokens | **current session** turns | `sum(computed_total_tokens)` |
 | Tokens/s | **all sessions** | freshest turn: `output_tokens / (completed_at − first_token_at)` |
 | Cache % | **all sessions** | `sum(cache_read) / (sum(cache_read) + sum(input))` |
-| “Live” | any turn with `status='running'` | 350 ms polling, faster icon animation |
+| Balance | `balance.json`, **selected model’s** provider | `providers[provider].amount` |
+| Limits % | same provider | `100 − usedPct` (remaining; no quota — dash) |
+| “Live” | any turn with `status='running'` | 400 ms polling, faster icon animation |
 
 The split is deliberate: **task volume** (turns, steps, total) follows the current
 session/task, while **channel quality** (speed and cache hit) is measured across the whole
@@ -53,6 +59,11 @@ installation — it is a provider/prefix property, not a chat one.
 type in this chat, ZCode keeps updating exactly that session. The unfinished turn is counted
 too. For debugging you can ask for a specific session: `/usage/latest?session=<id>`.
 
+The provider for money and percentage comes from the last request’s `modelSelection`:
+pick GLM/Kimi under opencode and you see `$0.00` plus opencode’s remaining monthly quota;
+pick DeepSeek and you see its balance with a dash instead of a quota. The `model_usage`
+row is only a fallback when a message carries no model selection.
+
 ## Install
 
 ```powershell
@@ -60,7 +71,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File plugins\zcode-counters\asset
 powershell -NoProfile -ExecutionPolicy Bypass -File plugins\zcode-counters\assets\uninstall.ps1
 ```
 
-Quit ZCode (tray → Quit) and start it again — the strip appears above the input.
+Quit ZCode (tray → Quit) and start it again — the strip appears inside the input field.
 
 ## Limits
 
