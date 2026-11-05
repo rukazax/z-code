@@ -1,11 +1,20 @@
 ﻿<#
-    zcode-ru: SessionStart-проверка. Молчит, когда локализация на месте;
-    печатает одну строку, если интерфейс снова английский (например, после
-    обновления ZCode, которое вернуло оригинальный app.asar).
+    zcode-ru: SessionStart-проверка.
+    Молчит, когда локализация на месте. Если интерфейс снова английский
+    (например, обновление ZCode вернуло оригинальный app.asar), выдаёт
+    strict-JSON с additionalContext — обычный текст ZCode отклонил бы.
     Всегда завершается с кодом 0.
 #>
 
 $ErrorActionPreference = 'Stop'
+
+function Write-Context([string]$message) {
+    $json = '{"additionalContext":' + (ConvertTo-Json $message -Compress) + '}'
+    $bytes = [Text.Encoding]::UTF8.GetBytes($json)
+    $stdout = [Console]::OpenStandardOutput()
+    $stdout.Write($bytes, 0, $bytes.Length)
+    $stdout.Flush()
+}
 
 try {
     $candidates = @('C:\Program Files\ZCode', (Join-Path $env:LOCALAPPDATA 'Programs\ZCode'))
@@ -41,7 +50,7 @@ try {
     }
 
     if (-not $text.Contains('Русский')) {
-        Write-Output 'zcode-ru: интерфейс ZCode сейчас на английском — похоже, приложение обновилось и вернуло оригинальный app.asar. Поставьте перевод заново: /rusifikator'
+        Write-Context 'zcode-ru: интерфейс ZCode сейчас на английском — похоже, приложение обновилось и вернуло оригинальный app.asar. Поставьте перевод заново: /rusifikator'
     }
 } catch {
     # диагностика не должна мешать старту сессии

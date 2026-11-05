@@ -4,7 +4,7 @@
     {
       "name": "zcode-ru",
       "source": "./plugins/zcode-ru",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "description": "Русская локализация интерфейса ZCode: 6999 строк каталога, меню, диалоги, шаблоны автоматизаций. Установка, проверка и откат.",
       "displayName": "ZCode на русском",
       "displayName_i18n": {
