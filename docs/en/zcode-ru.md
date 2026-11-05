@@ -104,6 +104,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File assets\uninstall.ps1
 `check.ps1` needs no administrator rights and changes nothing: it prints the install path, the app
 version, whether a backup exists, the interface language and the amount of Cyrillic in the catalog.
 
+## Backup and versions
+
+The original archive is stored per app version: `app.asar.backup.version` sits next to
+`app.asar.backup`. After a ZCode update the old backup is renamed to `app.asar.<version>.backup`
+and a fresh one is taken in its place — otherwise a rollback would write the previous version's
+archive and the app would fail to start. Without a tag the version is read straight from the
+archive. `uninstall.ps1` compares versions and refuses a foreign archive without an explicit
+`-Force`.
+
 ## Limitations
 
 - Windows only, with the standard ZCode install directories.
